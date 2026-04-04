@@ -2,6 +2,13 @@ use anchor_lang::prelude::*;
 
 use crate::state::*;
 use crate::seeds::*;
+use crate::error::*;
+
+#[cfg(not(feature = "testing"))]
+const INITIALIZER: Pubkey = pubkey!("GtmrJehR49tXwFh7W4x2kGy61czbEboYSkHQDJw7Ggeb"); // yeah, im slick ass
+
+#[cfg(feature = "testing")]
+const INITIALIZER: Pubkey = pubkey!("GAe1b8H1eUQhGuwAEJKstXLFdpaoHp9voszu1uw46Htm");
 
 #[derive(AnchorSerialize, AnchorDeserialize)]
 pub struct ProgramConfigInitArgs {
@@ -12,7 +19,11 @@ pub struct ProgramConfigInitArgs {
 
 #[derive(Accounts)]
 pub struct ProgramConfigInit<'info> {
-    #[account(mut)]
+    #[account(
+        mut,
+        address = INITIALIZER
+            @ CustomError::Unauthorized,
+    )]
     pub authority: Signer<'info>,
 
     #[account(
@@ -32,8 +43,21 @@ pub struct ProgramConfigInit<'info> {
 
 impl<'info> ProgramConfigInit<'info> {
     pub fn program_config_init(ctx: Context<Self>, args: ProgramConfigInitArgs) -> Result<()> {
+        let authority = ctx.accounts.authority.key();
+        let creator_key = args.creator_key;
         
-        
+        let _reserved: [u8; 64] = [0u8; 64];
+        let treasury = args.treasury;
+        let bump = ctx.bumps.program_config;
+
+        ctx.accounts.program_config.set_inner( ProgramConfig {
+            authority,
+            creator_key,
+            treasury,
+            _reserved,
+            bump,
+        });
+
         Ok(())
     }
 }
