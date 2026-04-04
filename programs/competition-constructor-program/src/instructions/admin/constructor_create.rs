@@ -6,6 +6,9 @@ use crate::error::*;
 
 #[derive(AnchorSerialize, AnchorDeserialize)]
 pub struct ConstructorCreateArgs {
+    // authority that can update pda
+    pub authority: Pubkey,
+
     // for competitions pda seeds
     pub creator_key: Pubkey,
 
@@ -48,9 +51,20 @@ pub struct ConstructorCreate<'info> {
 
 impl<'info> ConstructorCreate<'info> {
     pub fn constructor_create(ctx: Context<Self>, args: ConstructorCreateArgs) -> Result<()> {
+        let authority = args.authority;
+        let creator_key = args.creator_key;
+
+        let competition_index = 0;
+        let transaction_fee = args.transaction_fee;
+        
+        let bump = ctx.bumps.constructor;
+
         ctx.accounts.constructor.set_inner(Constructor {
-
-
+            authority,
+            creator_key,
+            competition_index,
+            transaction_fee,
+            bump,
         });
         
         Ok(())
