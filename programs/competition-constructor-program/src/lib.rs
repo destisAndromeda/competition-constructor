@@ -13,5 +13,11 @@ declare_id!("8bDwCU1Y598BoD2BWnchBCeuvQ4rW3DUbV4c3tDvRkVX");
 pub mod competition_constructor_program {
     use super::*;
 
+    pub fn program_config_init(
+        ctx: Context<ProgramConfigInit>,
+        args: ProgramConfigInitArgs,
+    ) -> Result<()> {
+        ProgramConfigInit::program_config_init(ctx, args)
+    }
 }
 
