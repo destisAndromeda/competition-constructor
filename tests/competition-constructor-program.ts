@@ -7,10 +7,4 @@ describe("competition-constructor-program", () => {
   anchor.setProvider(anchor.AnchorProvider.env());
 
   const program = anchor.workspace.competitionConstructorProgram as Program<CompetitionConstructorProgram>;
-
-  it("Is initialized!", async () => {
-    // Add your test here.
-    const tx = await program.methods.initialize().rpc();
-    console.log("Your transaction signature", tx);
-  });
 });
