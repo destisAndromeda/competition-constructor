@@ -4,7 +4,11 @@ use crate::state::*;
 use crate::seeds::*;
 
 #[derive(AnchorSerialize, AnchorDeserialize)]
-pub struct ProgramConfigInitArgs {}
+pub struct ProgramConfigInitArgs {
+    pub creator_key: Pubkey,
+
+    pub treasury: Pubkey,
+}
 
 #[derive(Accounts)]
 pub struct ProgramConfigInit<'info> {
@@ -24,4 +28,12 @@ pub struct ProgramConfigInit<'info> {
     pub program_config: Account<'info, ProgramConfig>,
 
     pub system_program: Program<'info, System>,
+}
+
+impl<'info> ProgramConfigInit<'info> {
+    pub fn program_config_init(ctx: Context<Self>, args: ProgramConfigInitArgs) -> Result<()> {
+        
+        
+        Ok(())
+    }
 }
