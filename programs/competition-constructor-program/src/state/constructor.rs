@@ -3,6 +3,9 @@ use anchor_lang::prelude::*;
 #[account]
 #[derive(InitSpace)]
 pub struct Constructor {
+    /// Authority that can update constructor
+    pub authority: Pubkey,
+
     /// Key for competitions PDA seeds
     pub creator_key: Pubkey,
 
