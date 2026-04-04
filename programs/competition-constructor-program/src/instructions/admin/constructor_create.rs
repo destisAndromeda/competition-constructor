@@ -6,6 +6,9 @@ use crate::error::*;
 
 #[derive(AnchorSerialize, AnchorDeserialize)]
 pub struct ConstructorCreateArgs {
+    // for competitions pda seeds
+    pub creator_key: Pubkey,
+
     // in lamports
     pub transaction_fee: u64,
 }
@@ -45,6 +48,11 @@ pub struct ConstructorCreate<'info> {
 
 impl<'info> ConstructorCreate<'info> {
     pub fn constructor_create(ctx: Context<Self>, args: ConstructorCreateArgs) -> Result<()> {
+        ctx.accounts.constructor.set_inner(Constructor {
+
+
+        });
+        
         Ok(())
     }
 }
