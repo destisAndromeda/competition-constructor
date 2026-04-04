@@ -25,5 +25,12 @@ pub mod competition_constructor_program {
     // pub fn program_config_update_creator_key
 
     // pub fn program_config_update_tresury
+
+    pub fn constructor_create(
+        ctx: Context<ConstructorCreate>,
+        args: ConstructorCreateArgs,
+    ) -> Result<()> {
+        ConstructorCreate::constructor_create(ctx, args)
+    }
 }
 
