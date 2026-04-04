@@ -19,5 +19,11 @@ pub mod competition_constructor_program {
     ) -> Result<()> {
         ProgramConfigInit::program_config_init(ctx, args)
     }
+
+    // pub fn program_config_update_authority
+    
+    // pub fn program_config_update_creator_key
+
+    // pub fn program_config_update_tresury
 }
 
