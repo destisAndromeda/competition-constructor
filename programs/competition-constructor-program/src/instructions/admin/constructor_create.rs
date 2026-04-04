@@ -42,3 +42,9 @@ pub struct ConstructorCreate<'info> {
 
     pub system_program: Program<'info, System>,
 }
+
+impl<'info> ConstructorCreate<'info> {
+    pub fn constructor_create(ctx: Context<Self>, args: ConstructorCreateArgs) -> Result<()> {
+        Ok(())
+    }
+}
