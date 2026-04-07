@@ -25,7 +25,7 @@ pub struct SwissSystemCreate<'info> {
             SEED_CONSTRUCTOR,
             organizer.key().as_ref(),
             SEED_SWISS_SYSTEM,
-            constructor.competition_index.to_le_bytes(),
+            &constructor.competition_index.to_le_bytes(),
         ],
         bump,
     )]
@@ -50,7 +50,34 @@ pub struct SwissSystemCreate<'info> {
         ],
         bump  = program_config.bump,
     )]
-    pub program_config: Account<'info, ProgramConfig>
+    pub program_config: Account<'info, ProgramConfig>,
 
-    pub system_program: Program<'info>,
+    pub system_program: Program<'info, System>,
+}
+
+impl<'info> SwissSystemCreate<'info> {
+    pub fn swiss_system_create(ctx: Context<Self>, args: SwissSystemCreateArgs) -> Result<()> {
+        let organizer = ctx.accounts.organizer.key();
+        let stage = None;
+        
+        let stage_info = args.stage_info;
+        let activated = false;
+
+        let vault_index = 0;
+        let participant_index = 0;
+
+        let bump = ctx.bumps.swiss_system;
+
+        ctx.accounts.swiss_system.set_inner( SwissSystem {
+            organizer,
+            stage,
+            stage_info,
+            activated,
+            vault_index,
+            participant_index,
+            bump,
+        });
+
+        Ok(())
+    }
 }

@@ -7,7 +7,7 @@ pub struct SwissSystem {
     pub organizer: Pubkey,
 
     /// Current stage of the competition
-    pub stage: Stage,
+    pub stage: Option<Stage>,
     
     /// Metadata for stage determine
     pub stage_info: StageInfo,
@@ -16,7 +16,7 @@ pub struct SwissSystem {
     pub activated: bool,
     
     /// The last index of created vault
-    pub valut_index: u64,
+    pub vault_index: u64,
     
     /// The last index of created participant
     pub participant_index: u64,
@@ -36,13 +36,13 @@ pub struct SwissSystem {
 )]
 pub enum Stage {
     /// The period during which participants can register their accounts
-    registration_period { timestamp: u64 },
+    RegistrationPeriod { timestamp: u64 },
     
     /// The period during which the competition takes place
-    competition_period  { timestamp: u64 },
+    CompetitionPeriod  { timestamp: u64 },
     
     /// The period during which the winner can claim the prize
-    withdraw_period     { timestamp: u64 },
+    WithdrawPeriod     { timestamp: u64 },
 }
 
 #[derive(
@@ -55,7 +55,7 @@ pub enum Stage {
     InitSpace,
 )]
 pub struct StageInfo {
-    registration_period: u64,
-    competition_period: u64,
-    withdraw_period: u64,
+    pub registration_period: u64,
+    pub competition_period: u64,
+    pub withdraw_period: u64,
 }
