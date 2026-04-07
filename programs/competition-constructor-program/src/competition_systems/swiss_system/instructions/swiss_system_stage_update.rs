@@ -65,8 +65,24 @@ impl<'info> SwissSystemStageUpdate<'info> {
 
     #[access_control(ctx.accounts.validate())]
     pub fn swiss_system_stage_update(ctx: Context<Self>, args: SwissSystemStageUpdateArgs) -> Result<()> {
-        
-        
+        let stage_info = ctx.accounts.swiss_system.stage_info.clone();
+        let swiss_system = &mut ctx.accounts.swiss_system;
+        let current_time = Clock::get()?.unix_timestamp;
+
+        if current_time >= stage_info.withdraw_period {
+            swiss_system.stage = Some(Stage::RegistrationPeriod {
+                timestamp: Clock::get()?.unix_timestamp,
+            });
+        } else if current_time >= stage_info.competition_period {
+            swiss_system.stage = Some(Stage::CompetitionPeriod {
+                timestamp: Clock::get()?.unix_timestamp,
+            });
+        } else if current_time >= stage_info.registration_period {
+            swiss_system.stage = Some(Stage::RegistrationPeriod {
+                timestamp: Clock::get()?.unix_timestamp,
+            });
+        }
+
         Ok(())
     }
 }

@@ -36,13 +36,13 @@ pub struct SwissSystem {
 )]
 pub enum Stage {
     /// The period during which participants can register their accounts
-    RegistrationPeriod { timestamp: u64 },
+    RegistrationPeriod { timestamp: i64 },
     
     /// The period during which the competition takes place
-    CompetitionPeriod  { timestamp: u64 },
+    CompetitionPeriod  { timestamp: i64 },
     
     /// The period during which the winner can claim the prize
-    WithdrawPeriod     { timestamp: u64 },
+    WithdrawPeriod     { timestamp: i64 },
 }
 
 #[derive(
@@ -55,7 +55,7 @@ pub enum Stage {
     InitSpace,
 )]
 pub struct StageInfo {
-    pub registration_period: u64,
-    pub competition_period: u64,
-    pub withdraw_period: u64,
+    pub registration_period: i64,
+    pub competition_period: i64,
+    pub withdraw_period: i64,
 }
