@@ -4,8 +4,10 @@ mod error;
 mod seeds;
 mod state;
 mod instructions;
+mod competition_systems;
 
 use instructions::*;
+use competition_systems::*;
 
 declare_id!("8bDwCU1Y598BoD2BWnchBCeuvQ4rW3DUbV4c3tDvRkVX");
 
