@@ -40,5 +40,12 @@ pub mod competition_constructor_program {
     // pub fn consturctor_creator_key_update (if set new key then should put zero into transaction_index)
     
     // pub fn constructor_transaction_fee_update
+
+    pub fn swiss_system_create(
+        ctx: Context<SwissSystemCreate>,
+        args: SwissSystemCreateArgs,
+    ) -> Result<()> {
+        swiss_system_create(ctx, args)
+    }
 }
 
