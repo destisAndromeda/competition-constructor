@@ -21,7 +21,7 @@ pub mod competition_constructor_program {
     }
 
     // pub fn program_config_update_authority
-    
+
     // pub fn program_config_update_creator_key
 
     // pub fn program_config_update_tresury
