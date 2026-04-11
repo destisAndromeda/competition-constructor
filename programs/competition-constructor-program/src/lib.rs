@@ -17,10 +17,17 @@ pub mod competition_constructor_program {
         ctx: Context<ProgramConfigInit>,
         args: ProgramConfigInitArgs,
     ) -> Result<()> {
-        ProgramConfigInit::program_config_init(ctx, args)
+        ProgramConfigInit::
+            program_config_init(ctx, args)
     }
 
-    // pub fn program_config_update_authority
+    pub fn program_config_update_authority(
+        ctx: Context<ProgramConfigUpdateAuthority>,
+        args: ProgramConfigUpdateAuthorityArgs,
+    ) -> Result<()> {
+        ProgramConfigUpdateAuthority::
+            program_config_update_authority(ctx, args)
+    }
 
     // pub fn program_config_update_creator_key
 
@@ -30,7 +37,8 @@ pub mod competition_constructor_program {
         ctx: Context<ConstructorCreate>,
         args: ConstructorCreateArgs,
     ) -> Result<()> {
-        ConstructorCreate::constructor_create(ctx, args)
+        ConstructorCreate::
+            constructor_create(ctx, args)
     }
 
     // pub fn constructor_authority_update
