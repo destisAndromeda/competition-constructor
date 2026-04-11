@@ -21,15 +21,21 @@ pub mod competition_constructor_program {
             program_config_init(ctx, args)
     }
 
-    pub fn program_config_update_authority(
-        ctx: Context<ProgramConfigUpdateAuthority>,
+    pub fn program_config_update(
+        ctx: Context<ProgramConfigUpdate>,
         args: ProgramConfigUpdateAuthorityArgs,
     ) -> Result<()> {
-        ProgramConfigUpdateAuthority::
+        ProgramConfigUpdate::
             program_config_update_authority(ctx, args)
     }
 
-    // pub fn program_config_update_creator_key
+    pub fn program_config_update_creator_key(
+        ctx: Context<ProgramConfigUpdate>,
+        args: ProgramConfigUpdateCreatorKeyArgs,
+    ) -> Result<()> {
+        ProgramConfigUpdate::
+            program_config_update_creator_key(ctx, args)
+    }
 
     // pub fn program_config_update_tresury
 

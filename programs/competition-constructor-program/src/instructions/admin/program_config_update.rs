@@ -9,15 +9,19 @@ pub struct ProgramConfigUpdateAuthorityArgs {
     pub authority: Pubkey,
 }
 
+#[derive(AnchorSerialize, AnchorDeserialize)]
+pub struct ProgramConfigUpdateCreatorKeyArgs {
+    pub creator_key: Pubkey,
+}
+
 #[derive(Accounts)]
-#[instruction(args: ProgramConfigUpdateAuthorityArgs)]
-pub struct ProgramConfigUpdateAuthority<'info> {
+pub struct ProgramConfigUpdate<'info> {
     #[account(mut)]
     pub authority: Signer<'info>,
 
     #[account(
         mut,
-        address = authority.key()
+        has_one = authority
             @ CustomError::Unauthorized,
         seeds = [
             SEED_PREFIX,
@@ -28,13 +32,37 @@ pub struct ProgramConfigUpdateAuthority<'info> {
     pub program_config: Account<'info, ProgramConfig>,
 }
 
-impl<'info> ProgramConfigUpdateAuthority<'info> {
+impl<'info> ProgramConfigUpdate<'info> {
     pub fn program_config_update_authority(
         ctx: Context<Self>,
         args: ProgramConfigUpdateAuthorityArgs,
     ) -> Result<()> {
         let program_config = &mut ctx.accounts.program_config;
+        
+        require_neq!(
+            program_config.authority,
+            args.authority,
+            CustomError::Deprecated,
+        );
+        
         program_config.authority = args.authority;
+
+        Ok(())
+    }
+
+    pub fn program_config_update_creator_key(
+        ctx: Context<Self>,
+        args: ProgramConfigUpdateCreatorKeyArgs,
+    ) -> Result<()> {
+        let program_config = &mut ctx.accounts.program_config;
+
+        require_neq!(
+            program_config.creator_key,
+            args.creator_key,
+            CustomError::Deprecated,
+        );
+
+        program_config.creator_key = args.creator_key;
 
         Ok(())
     }
