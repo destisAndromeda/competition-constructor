@@ -2,8 +2,7 @@ use anchor_lang::prelude::*;
 
 use crate::state::*;
 use crate::seeds::*;
-use crate::error::*;
-use crate::competition_systems::swiss_system::local_state::*;
+use crate::competition_systems::swiss_system::*;
 
 #[derive(AnchorSerialize, AnchorDeserialize)]
 pub struct SwissSystemCreateArgs {
@@ -18,7 +17,7 @@ pub struct SwissSystemCreate<'info> {
     #[account(
         init,
         payer = organizer,
-        space = 8 + SwissSystem::INIT_SPACE,
+        space = 8 + local_state::SwissSystem::INIT_SPACE,
         seeds = [
             SEED_PREFIX,
             constructor.key().as_ref(),
@@ -29,7 +28,7 @@ pub struct SwissSystemCreate<'info> {
         ],
         bump,
     )]
-    pub swiss_system: Account<'info, SwissSystem>,
+    pub swiss_system: Account<'info, local_state::SwissSystem>,
 
     #[account(
         mut,
@@ -68,7 +67,7 @@ impl<'info> SwissSystemCreate<'info> {
 
         let bump = ctx.bumps.swiss_system;
 
-        ctx.accounts.swiss_system.set_inner( SwissSystem {
+        ctx.accounts.swiss_system.set_inner( local_state::SwissSystem {
             organizer,
             stage,
             stage_info,

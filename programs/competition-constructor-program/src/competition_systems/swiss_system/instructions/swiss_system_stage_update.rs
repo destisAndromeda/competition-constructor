@@ -3,7 +3,7 @@ use anchor_lang::prelude::*;
 use crate::state::*;
 use crate::seeds::*;
 use crate::error::*;
-use crate::competition_systems::swiss_system::local_state::*;
+use crate::competition_systems::swiss_system::*;
 
 #[derive(AnchorSerialize, AnchorDeserialize)]
 pub struct SwissSystemStageUpdateArgs {
@@ -25,7 +25,7 @@ pub struct SwissSystemStageUpdate<'info> {
         ],
         bump  = swiss_system.bump,
     )]
-    pub swiss_system: Account<'info, SwissSystem>,
+    pub swiss_system: Account<'info, local_state::SwissSystem>,
 
     #[account(
         seeds = [
@@ -64,21 +64,21 @@ impl<'info> SwissSystemStageUpdate<'info> {
     }
 
     #[access_control(ctx.accounts.validate())]
-    pub fn swiss_system_stage_update(ctx: Context<Self>, args: SwissSystemStageUpdateArgs) -> Result<()> {
+    pub fn swiss_system_stage_update(ctx: Context<Self>, _args: SwissSystemStageUpdateArgs) -> Result<()> {
         let stage_info = ctx.accounts.swiss_system.stage_info.clone();
         let swiss_system = &mut ctx.accounts.swiss_system;
         let current_time = Clock::get()?.unix_timestamp;
 
         if current_time >= stage_info.withdraw_period {
-            swiss_system.stage = Some(Stage::RegistrationPeriod {
+            swiss_system.stage = Some(local_state::Stage::RegistrationPeriod {
                 timestamp: Clock::get()?.unix_timestamp,
             });
         } else if current_time >= stage_info.competition_period {
-            swiss_system.stage = Some(Stage::CompetitionPeriod {
+            swiss_system.stage = Some(local_state::Stage::CompetitionPeriod {
                 timestamp: Clock::get()?.unix_timestamp,
             });
         } else if current_time >= stage_info.registration_period {
-            swiss_system.stage = Some(Stage::RegistrationPeriod {
+            swiss_system.stage = Some(local_state::Stage::RegistrationPeriod {
                 timestamp: Clock::get()?.unix_timestamp,
             });
         }

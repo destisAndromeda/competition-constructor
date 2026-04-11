@@ -45,7 +45,14 @@ pub mod competition_constructor_program {
         ctx: Context<SwissSystemCreate>,
         args: SwissSystemCreateArgs,
     ) -> Result<()> {
-        swiss_system_create(ctx, args)
+        SwissSystemCreate::swiss_system_create(ctx, args)
+    }
+
+    pub fn swiss_system_stage_update(
+        ctx: Context<SwissSystemStageUpdate>,
+        args: SwissSystemStageUpdateArgs,
+    ) -> Result<()> {
+        SwissSystemStageUpdate::swiss_system_stage_update(ctx, args)
     }
 }
 
