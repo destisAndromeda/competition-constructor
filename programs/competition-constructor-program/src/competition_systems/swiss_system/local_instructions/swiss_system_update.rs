@@ -51,23 +51,6 @@ pub struct SwissSystemUpdateStage<'info> {
 }
 
 impl<'info> SwissSystemUpdateStage<'info> {
-    fn validate(
-        &self,
-    ) -> Result<()> {
-        let Self {
-            swiss_system,
-            ..
-        } = self;
-
-        require!(
-            swiss_system.activated,
-            CustomError::Inactive,
-        );
-
-        Ok(())
-    }
-
-    #[access_control(ctx.accounts.validate())]
     pub fn swiss_system_update_stage(
         ctx: Context<Self>,
         _args: SwissSystemUpdateStageArgs,
