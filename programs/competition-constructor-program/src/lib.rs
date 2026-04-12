@@ -94,5 +94,13 @@ pub mod competition_constructor_program {
         SwissSystemUpdateStage::
             swiss_system_update_stage(ctx, args)
     }
+
+    pub fn swiss_system_vault_create(
+        ctx: Context<SwissSystemVaultCreate>,
+        args: SwissSystemVaultCreateArgs,
+    ) -> Result<()> {
+        SwissSystemVaultCreate::
+            swiss_system_vault_create(ctx, args)
+    }
 }
 
