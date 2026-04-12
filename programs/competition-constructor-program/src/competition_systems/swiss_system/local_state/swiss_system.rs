@@ -6,6 +6,9 @@ pub struct SwissSystem {
     /// Owner of event
     pub organizer: Pubkey,
 
+    /// Creator key for accounts PDA
+    pub creator_key: Pubkey,    
+
     /// Current stage of the competition
     pub stage: Option<Stage>,
     

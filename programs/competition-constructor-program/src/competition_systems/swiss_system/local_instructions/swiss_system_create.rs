@@ -8,6 +8,8 @@ use crate::competition_systems::swiss_system::*;
 #[derive(AnchorSerialize, AnchorDeserialize)]
 pub struct SwissSystemCreateArgs {
     pub stage_info: StageInfo,
+
+    pub creator_key: Pubkey,
 }
 
 #[derive(Accounts)]
@@ -21,8 +23,8 @@ pub struct SwissSystemCreate<'info> {
         space = 8 + local_state::SwissSystem::INIT_SPACE,
         seeds = [
             SEED_PREFIX,
-            constructor.key().as_ref(),
-            SEED_CONSTRUCTOR,
+            constructor.creator_key.key().as_ref(),
+            SEED_COMPETITION,
             organizer.key().as_ref(),
             SEED_SWISS_SYSTEM,
             &constructor.competition_index.to_le_bytes(),
@@ -58,8 +60,9 @@ pub struct SwissSystemCreate<'info> {
 impl<'info> SwissSystemCreate<'info> {
     pub fn swiss_system_create(ctx: Context<Self>, args: SwissSystemCreateArgs) -> Result<()> {
         let organizer = ctx.accounts.organizer.key();
-        let stage = None;
+        let creator_key = args.creator_key.key();
 
+        let stage = None;
         let stage_info = args.stage_info;
         
         let vault_index = 0;
@@ -69,6 +72,7 @@ impl<'info> SwissSystemCreate<'info> {
 
         ctx.accounts.swiss_system.set_inner( local_state::SwissSystem {
             organizer,
+            creator_key,
             stage,
             stage_info,
             vault_index,

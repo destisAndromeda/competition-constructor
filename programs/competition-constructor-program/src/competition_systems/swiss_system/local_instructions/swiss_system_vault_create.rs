@@ -27,7 +27,7 @@ pub struct SwissSystemVaultCreate<'info> {
         space = 8 + Vault::INIT_SPACE,
         seeds = [
             SEED_PREFIX,
-            swiss_system.key().as_ref(),
+            swiss_system.creator_key.key().as_ref(),
             SEED_SWISS_SYSTEM,
             organizer.key().as_ref(),
             SEED_VAULT,
@@ -40,7 +40,7 @@ pub struct SwissSystemVaultCreate<'info> {
     #[account(
         seeds = [
             SEED_PREFIX,
-            constructor.key().as_ref(),
+            constructor.creator_key.key().as_ref(),
             SEED_CONSTRUCTOR,
             organizer.key().as_ref(),
             SEED_SWISS_SYSTEM,

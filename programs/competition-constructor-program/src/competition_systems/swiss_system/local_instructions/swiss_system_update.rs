@@ -19,8 +19,8 @@ pub struct SwissSystemUpdateStage<'info> {
         mut,
         seeds = [
             SEED_PREFIX,
-            constructor.key().as_ref(),
-            SEED_CONSTRUCTOR,
+            constructor.creator_key.key().as_ref(),
+            SEED_COMPETITION,
             args.organizer.key().as_ref(),
             SEED_SWISS_SYSTEM,
             &args.competition_index.to_le_bytes(),
