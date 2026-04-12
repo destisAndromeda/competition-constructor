@@ -4,7 +4,10 @@ use anchor_lang::prelude::*;
 pub enum CustomError {
     #[msg("Unauthorized")]
     Unauthorized,
-
     #[msg("Inactive")]
     Inactive,
+    #[msg("Depercated Address")]
+    DeprecatedAddress,
+    #[msg("Invalid Amount")]
+    InvalidAmount,
 }

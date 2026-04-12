@@ -19,40 +19,64 @@ pub mod competition_constructor_program {
         ctx: Context<ProgramConfigInit>,
         args: ProgramConfigInitArgs,
     ) -> Result<()> {
-        ProgramConfigInit::program_config_init(ctx, args)
+        ProgramConfigInit::
+            program_config_init(ctx, args)
     }
 
-    // pub fn program_config_update_authority
-    
-    // pub fn program_config_update_creator_key
+    pub fn program_config_update(
+        ctx: Context<ProgramConfigUpdate>,
+        args: ProgramConfigUpdateAuthorityArgs,
+    ) -> Result<()> {
+        ProgramConfigUpdate::
+            program_config_update_authority(ctx, args)
+    }
 
-    // pub fn program_config_update_tresury
+    pub fn program_config_update_creator_key(
+        ctx: Context<ProgramConfigUpdate>,
+        args: ProgramConfigUpdateCreatorKeyArgs,
+    ) -> Result<()> {
+        ProgramConfigUpdate::
+            program_config_update_creator_key(ctx, args)
+    }
+
+    pub fn program_config_update_tresury(
+        ctx: Context<ProgramConfigUpdate>,
+        args: ProgramConfigUpdateTreasuryArgs,
+    ) -> Result<()> {
+        ProgramConfigUpdate::
+            progmram_config_update_treasury(ctx, args)
+    }
 
     pub fn constructor_create(
         ctx: Context<ConstructorCreate>,
         args: ConstructorCreateArgs,
     ) -> Result<()> {
-        ConstructorCreate::constructor_create(ctx, args)
+        ConstructorCreate::
+            constructor_create(ctx, args)
     }
 
-    // pub fn constructor_authority_update
-
-    // pub fn consturctor_creator_key_update (if set new key then should put zero into transaction_index)
-    
-    // pub fn constructor_transaction_fee_update
-
-    pub fn swiss_system_create(
-        ctx: Context<SwissSystemCreate>,
-        args: SwissSystemCreateArgs,
+    pub fn constructor_update_authority(
+        ctx: Context<ConstructorUpdate>,
+        args: ConstructorUpdateAuthorityArgs,
     ) -> Result<()> {
-        SwissSystemCreate::swiss_system_create(ctx, args)
+        ConstructorUpdate::
+            constructor_update_authority(ctx, args)
     }
 
-    pub fn swiss_system_stage_update(
-        ctx: Context<SwissSystemStageUpdate>,
-        args: SwissSystemStageUpdateArgs,
+    pub fn constructor_update_creator_key(
+        ctx: Context<ConstructorUpdate>,
+        args: ConstructorUpdateCreatorKeyArgs,
+        ) -> Result<()> {
+        ConstructorUpdate::
+            constructor_update_creator_key(ctx, args)
+    }
+
+    pub fn constructor_update_transaction_fee(
+        ctx: Context<ConstructorUpdate>,
+        args: ConstructorUpdateTransactionFeeArgs,
     ) -> Result<()> {
-        SwissSystemStageUpdate::swiss_system_stage_update(ctx, args)
+        ConstructorUpdate::
+            constructor_update_transaction_fee(ctx, args)
     }
 }
 
