@@ -1,3 +1,3 @@
-// pub mod example_state;
+pub mod state_example;
 
-// pub mod example_state::*;
+pub mod state_example::*;

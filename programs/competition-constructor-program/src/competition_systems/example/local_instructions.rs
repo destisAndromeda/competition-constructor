@@ -1,3 +1,3 @@
-// pub mod example_instruction;
+pub mod instruction_example;
 
-// pub use example_instruction::*;
+pub use instruction_example::*;
