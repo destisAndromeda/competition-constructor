@@ -59,7 +59,7 @@ impl<'info> SwissSystemCreate<'info> {
     pub fn swiss_system_create(ctx: Context<Self>, args: SwissSystemCreateArgs) -> Result<()> {
         let organizer = ctx.accounts.organizer.key();
         let stage = None;
-        
+
         let stage_info = args.stage_info;
         let activated = false;
 

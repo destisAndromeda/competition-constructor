@@ -77,16 +77,19 @@ impl<'info> SwissSystemUpdateStage<'info> {
         let current_time = Clock::get()?.unix_timestamp;
 
         if current_time >= stage_info.withdraw_period {
-            swiss_system.stage = Some(local_state::Stage::RegistrationPeriod {
-                timestamp: Clock::get()?.unix_timestamp,
+            swiss_system.stage = Some(
+                local_state::Stage::RegistrationPeriod {
+                    timestamp: Clock::get()?.unix_timestamp,
             });
         } else if current_time >= stage_info.competition_period {
-            swiss_system.stage = Some(local_state::Stage::CompetitionPeriod {
-                timestamp: Clock::get()?.unix_timestamp,
+            swiss_system.stage = Some(
+                local_state::Stage::CompetitionPeriod {
+                    timestamp: Clock::get()?.unix_timestamp,
             });
         } else if current_time >= stage_info.registration_period {
-            swiss_system.stage = Some(local_state::Stage::RegistrationPeriod {
-                timestamp: Clock::get()?.unix_timestamp,
+            swiss_system.stage = Some(
+                local_state::Stage::RegistrationPeriod {
+                    timestamp: Clock::get()?.unix_timestamp,
             });
         }
 
