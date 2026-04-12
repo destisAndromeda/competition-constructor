@@ -14,6 +14,11 @@ pub struct ProgramConfigUpdateCreatorKeyArgs {
     pub creator_key: Pubkey,
 }
 
+#[derive(AnchorSerialize, AnchorDeserialize)]
+pub struct ProgramConfigUpdateTreasuryArgs {
+    pub treasury: Pubkey,
+}
+
 #[derive(Accounts)]
 pub struct ProgramConfigUpdate<'info> {
     #[account(mut)]
@@ -42,7 +47,7 @@ impl<'info> ProgramConfigUpdate<'info> {
         require_neq!(
             program_config.authority,
             args.authority,
-            CustomError::Deprecated,
+            CustomError::DeprecatedAddress,
         );
         
         program_config.authority = args.authority;
@@ -59,10 +64,27 @@ impl<'info> ProgramConfigUpdate<'info> {
         require_neq!(
             program_config.creator_key,
             args.creator_key,
-            CustomError::Deprecated,
+            CustomError::DeprecatedAddress,
         );
 
         program_config.creator_key = args.creator_key;
+
+        Ok(())
+    }
+
+    pub fn progmram_config_update_treasury(
+        ctx: Context<Self>,
+        args: ProgramConfigUpdateTreasuryArgs,
+    ) -> Result<()> {
+        let program_config = &mut ctx.accounts.program_config;
+
+        require_neq!(
+            program_config.treasury,
+            args.treasury,
+            CustomError::DeprecatedAddress,
+        );
+
+        program_config.treasury = args.treasury;
 
         Ok(())
     }

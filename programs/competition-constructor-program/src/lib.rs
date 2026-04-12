@@ -37,7 +37,13 @@ pub mod competition_constructor_program {
             program_config_update_creator_key(ctx, args)
     }
 
-    // pub fn program_config_update_tresury
+    pub fn program_config_update_tresury(
+        ctx: Context<ProgramConfigUpdate>,
+        args: ProgramConfigUpdateTreasuryArgs,
+    ) -> Result<()> {
+        ProgramConfigUpdate::
+            progmram_config_update_treasury(ctx, args)
+    }
 
     pub fn constructor_create(
         ctx: Context<ConstructorCreate>,
@@ -47,10 +53,28 @@ pub mod competition_constructor_program {
             constructor_create(ctx, args)
     }
 
-    // pub fn constructor_authority_update
+    pub fn constructor_update_authority(
+        ctx: Context<ConstructorUpdate>,
+        args: ConstructorUpdateAuthorityArgs,
+    ) -> Result<()> {
+        ConstructorUpdate::
+            constructor_update_authority(ctx, args)
+    }
 
-    // pub fn consturctor_creator_key_update (if set new key then should put zero into transaction_index)
-    
-    // pub fn constructor_transaction_fee_update
+    pub fn constructor_update_creator_key(
+        ctx: Context<ConstructorUpdate>,
+        args: ConstructorUpdateCreatorKeyArgs,
+        ) -> Result<()> {
+        ConstructorUpdate::
+            constructor_update_creator_key(ctx, args)
+    }
+
+    pub fn constructor_update_transaction_fee(
+        ctx: Context<ConstructorUpdate>,
+        args: ConstructorUpdateTransactionFeeArgs,
+    ) -> Result<()> {
+        ConstructorUpdate::
+            constructor_update_transaction_fee(ctx, args)
+    }
 }
 
