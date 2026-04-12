@@ -2,6 +2,7 @@ use anchor_lang::prelude::*;
 
 use crate::state::*;
 use crate::seeds::*;
+use crate::error::*;
 use crate::competition_systems::swiss_system::*;
 
 #[derive(AnchorSerialize, AnchorDeserialize)]
@@ -76,6 +77,13 @@ impl<'info> SwissSystemCreate<'info> {
             participant_index,
             bump,
         });
+
+        let constructor = &mut ctx.accounts.constructor;
+
+        constructor.competition_index = 
+        constructor.competition_index.checked_add(1).ok_or(
+            CustomError::Overflow,
+        )?;
 
         Ok(())
     }

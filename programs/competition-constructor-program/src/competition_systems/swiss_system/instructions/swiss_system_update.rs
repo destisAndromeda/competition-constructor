@@ -6,13 +6,15 @@ use crate::error::*;
 use crate::competition_systems::swiss_system::*;
 
 #[derive(AnchorSerialize, AnchorDeserialize)]
-pub struct SwissSystemStageUpdateArgs {
+pub struct SwissSystemUpdateStageArgs {
     pub organizer: Pubkey,
+    
+    pub competition_index: u64,
 }
 
 #[derive(Accounts)]
-#[instruction(args: SwissSystemStageUpdateArgs)]
-pub struct SwissSystemStageUpdate<'info> {
+#[instruction(args: SwissSystemUpdateStageArgs)]
+pub struct SwissSystemUpdateStage<'info> {
     #[account(
         mut,
         seeds = [
@@ -21,7 +23,7 @@ pub struct SwissSystemStageUpdate<'info> {
             SEED_CONSTRUCTOR,
             args.organizer.key().as_ref(),
             SEED_SWISS_SYSTEM,
-            &constructor.competition_index.to_le_bytes(),
+            &args.competition_index.to_le_bytes(),
         ],
         bump  = swiss_system.bump,
     )]
@@ -48,8 +50,10 @@ pub struct SwissSystemStageUpdate<'info> {
     pub program_config: Account<'info, ProgramConfig>,
 }
 
-impl<'info> SwissSystemStageUpdate<'info> {
-    fn validate(&self) -> Result<()> {
+impl<'info> SwissSystemUpdateStage<'info> {
+    fn validate(
+        &self,
+    ) -> Result<()> {
         let Self {
             swiss_system,
             ..
@@ -64,7 +68,10 @@ impl<'info> SwissSystemStageUpdate<'info> {
     }
 
     #[access_control(ctx.accounts.validate())]
-    pub fn swiss_system_stage_update(ctx: Context<Self>, _args: SwissSystemStageUpdateArgs) -> Result<()> {
+    pub fn swiss_system_update_stage(
+        ctx: Context<Self>,
+        _args: SwissSystemUpdateStageArgs,
+    ) -> Result<()> {
         let stage_info = ctx.accounts.swiss_system.stage_info.clone();
         let swiss_system = &mut ctx.accounts.swiss_system;
         let current_time = Clock::get()?.unix_timestamp;

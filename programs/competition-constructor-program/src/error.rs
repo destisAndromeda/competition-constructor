@@ -3,11 +3,13 @@ use anchor_lang::prelude::*;
 #[error_code]
 pub enum CustomError {
     #[msg("Unauthorized")]
-    Unauthorized,
+    Unauthorized,          // 6000
     #[msg("Inactive")]
-    Inactive,
+    Inactive,              // 6001
     #[msg("Depercated Address")]
-    DeprecatedAddress,
+    DeprecatedAddress,     // 6002
     #[msg("Invalid Amount")]
-    InvalidAmount,
+    InvalidAmount,         // 6003
+    #[msg("Overflow")]
+    Overflow,              // 6004
 }

@@ -78,5 +78,21 @@ pub mod competition_constructor_program {
         ConstructorUpdate::
             constructor_update_transaction_fee(ctx, args)
     }
+
+    pub fn siwss_system_create(
+        ctx: Context<SwissSystemCreate>,
+        args: SwissSystemCreateArgs,
+    ) -> Result<()> {
+        SwissSystemCreate::
+            swiss_system_create(ctx, args)
+    }
+
+    pub fn swiss_system_update_stage(
+        ctx: Context<SwissSystemUpdateStage>,
+        args: SwissSystemUpdateStageArgs,
+    ) -> Result<()> {
+        SwissSystemUpdateStage::
+            swiss_system_update_stage(ctx, args)
+    }
 }
 
