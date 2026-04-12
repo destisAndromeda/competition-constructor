@@ -94,5 +94,6 @@ pub mod competition_constructor_program {
         SwissSystemUpdateStage::
             swiss_system_update_stage(ctx, args)
     }
+    
 }
 

@@ -11,9 +11,6 @@ pub struct SwissSystem {
     
     /// Metadata for stage determine
     pub stage_info: StageInfo,
-
-    /// Current status of competition
-    pub activated: bool,
     
     /// The last index of created vault
     pub vault_index: u64,
