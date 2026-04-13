@@ -17,10 +17,7 @@ pub struct SwissSystem {
     
     /// The last index of created vault
     pub vault_index: u64,
-    
-    /// The last index of created participant
-    pub participant_index: u64,
-    
+
     /// Bump for SwissSystem account PDA seeds
     pub bump: u8,
 }

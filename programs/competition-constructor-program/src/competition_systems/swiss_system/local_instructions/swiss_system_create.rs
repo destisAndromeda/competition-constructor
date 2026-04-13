@@ -64,8 +64,6 @@ impl<'info> SwissSystemCreate<'info> {
         let stage_info = args.stage_info;
         
         let vault_index = 0;
-        let participant_index = 0;
-        
         let bump = ctx.bumps.swiss_system;
 
         ctx.accounts.swiss_system.set_inner( local_state::SwissSystem {
@@ -74,7 +72,6 @@ impl<'info> SwissSystemCreate<'info> {
             stage,
             stage_info,
             vault_index,
-            participant_index,
             bump,
         });
 

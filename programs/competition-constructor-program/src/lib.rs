@@ -79,7 +79,7 @@ pub mod competition_constructor_program {
             constructor_update_transaction_fee(ctx, args)
     }
 
-    pub fn siwss_system_create(
+    pub fn swiss_system_create(
         ctx: Context<SwissSystemCreate>,
         args: SwissSystemCreateArgs,
     ) -> Result<()> {
@@ -109,6 +109,22 @@ pub mod competition_constructor_program {
     ) -> Result<()> {
         SwissSystemPrizeWithdraw::
             swiss_system_prize_withdraw(ctx, args)
+    }
+
+    pub fn swiss_system_participant_create(
+        ctx: Context<SwissSystemParticipantCreate>,
+        args: SwissSystemParticipantCreateArgs,
+    ) -> Result<()> {
+        SwissSystemParticipantCreate::
+            swiss_system_participant_create(ctx, args)
+    }
+
+    pub fn swiss_system_leaderboard_create(
+        ctx: Context<SwissSystemLeaderBoardCreate>,
+        args: SwissSystemLeaderBoardCreateArgs,
+    ) -> Result<()> {
+        SwissSystemLeaderBoardCreate::
+            swiss_system_leaderboard_create(ctx, args)
     }
 }
 

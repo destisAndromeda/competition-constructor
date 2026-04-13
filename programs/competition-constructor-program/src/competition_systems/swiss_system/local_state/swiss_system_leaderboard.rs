@@ -18,7 +18,7 @@ pub struct LeaderBoard {
 
 impl LeaderBoard {
     pub fn sort_by_points(&mut self) -> Result<()> {
-        let participants = &mut self.participants[.. self.limit as usize];
+        let participants = &mut self.participants[..LEADER_BOARD_LIMIT];
 
         participants.sort_unstable_by(|a, b| b.points.cmp(&a.points));
 
