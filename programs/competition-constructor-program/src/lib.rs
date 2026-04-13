@@ -126,5 +126,13 @@ pub mod competition_constructor_program {
         SwissSystemLeaderBoardCreate::
             swiss_system_leaderboard_create(ctx, args)
     }
+
+    pub fn swiss_system_points_award(
+        ctx: Context<SwissSystemPointsAward>,
+        args: SwissSystemPointsAwardArgs
+    ) -> Result<()> {
+        SwissSystemPointsAward::
+            swiss_system_points_award(ctx, args)
+    }
 }
 

@@ -78,7 +78,7 @@ impl<'info> SwissSystemLeaderBoardCreate<'info> {
 
         ctx.accounts.leaderboard.set_inner(LeaderBoard {
             authority,
-            participants: Vec::new(),
+            list: Vec::new(),
             bump,
         });
 
