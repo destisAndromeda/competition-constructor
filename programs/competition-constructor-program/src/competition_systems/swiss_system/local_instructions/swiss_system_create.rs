@@ -25,8 +25,6 @@ pub struct SwissSystemCreate<'info> {
             SEED_PREFIX,
             constructor.creator_key.key().as_ref(),
             SEED_COMPETITION,
-            organizer.key().as_ref(),
-            SEED_SWISS_SYSTEM,
             &constructor.competition_index.to_le_bytes(),
         ],
         bump,

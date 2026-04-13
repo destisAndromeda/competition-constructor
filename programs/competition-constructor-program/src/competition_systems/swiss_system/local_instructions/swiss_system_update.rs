@@ -2,13 +2,10 @@ use anchor_lang::prelude::*;
 
 use crate::state::*;
 use crate::seeds::*;
-use crate::error::*;
 use crate::competition_systems::swiss_system::*;
 
 #[derive(AnchorSerialize, AnchorDeserialize)]
 pub struct SwissSystemUpdateStageArgs {
-    pub organizer: Pubkey,
-    
     pub competition_index: u64,
 }
 
@@ -21,8 +18,6 @@ pub struct SwissSystemUpdateStage<'info> {
             SEED_PREFIX,
             constructor.creator_key.key().as_ref(),
             SEED_COMPETITION,
-            args.organizer.key().as_ref(),
-            SEED_SWISS_SYSTEM,
             &args.competition_index.to_le_bytes(),
         ],
         bump  = swiss_system.bump,
@@ -71,7 +66,7 @@ impl<'info> SwissSystemUpdateStage<'info> {
             });
         } else if current_time >= stage_info.registration_period {
             swiss_system.stage = Some(
-                local_state::Stage::RegistrationPeriod {
+                local_state::Stage::WithdrawPeriod {
                     timestamp: Clock::get()?.unix_timestamp,
             });
         }

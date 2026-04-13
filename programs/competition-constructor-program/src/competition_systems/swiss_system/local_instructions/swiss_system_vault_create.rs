@@ -10,8 +10,6 @@ use crate::competition_systems::swiss_system::local_state::*;
 pub struct SwissSystemVaultCreateArgs {
     pub competition_index: u64,
 
-    pub place: u64,
-
     pub prize: u64,
 }
 
@@ -28,8 +26,6 @@ pub struct SwissSystemVaultCreate<'info> {
         seeds = [
             SEED_PREFIX,
             swiss_system.creator_key.key().as_ref(),
-            SEED_SWISS_SYSTEM,
-            organizer.key().as_ref(),
             SEED_VAULT,
             &swiss_system.vault_index.to_le_bytes(),
         ],
@@ -38,12 +34,13 @@ pub struct SwissSystemVaultCreate<'info> {
     pub vault: Account<'info, Vault>,
 
     #[account(
+        mut,
+        has_one = organizer
+            @ CustomError::Unauthorized,
         seeds = [
             SEED_PREFIX,
             constructor.creator_key.key().as_ref(),
-            SEED_CONSTRUCTOR,
-            organizer.key().as_ref(),
-            SEED_SWISS_SYSTEM,
+            SEED_COMPETITION,
             &args.competition_index.to_le_bytes(),
         ],
         bump  = swiss_system.bump,
@@ -55,7 +52,7 @@ pub struct SwissSystemVaultCreate<'info> {
             SEED_PREFIX,
             program_config.key().as_ref(),
             SEED_CONSTRUCTOR,
-            constructor.creator_key.key().as_ref(),
+            program_config.creator_key.key().as_ref(),
         ],
         bump  = constructor.bump,
     )]
@@ -82,7 +79,7 @@ impl<'info> SwissSystemVaultCreate<'info> {
         let organizer = ctx.accounts.organizer.key();
         let winner = None;
         
-        let place = args.place;
+        let place = ctx.accounts.swiss_system.vault_index;
         let bump = ctx.bumps.vault;
 
         ctx.accounts.vault.set_inner(Vault {
@@ -106,6 +103,11 @@ impl<'info> SwissSystemVaultCreate<'info> {
         system_program::transfer(
             context,
             args.prize,
+        )?;
+
+        ctx.accounts.swiss_system.vault_index =
+        ctx.accounts.swiss_system.vault_index.checked_add(1).ok_or(
+            CustomError::Overflow,
         )?;
 
         Ok(())
