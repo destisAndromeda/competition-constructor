@@ -3,20 +3,23 @@ use anchor_lang::prelude::*;
 #[error_code]
 pub enum CustomError {
     #[msg("Unauthorized")]
-    Unauthorized,          // 6000
+    Unauthorized,                  // 6000
     
     #[msg("Inactive")]
-    Inactive,              // 6001
+    Inactive,                      // 6001
     
     #[msg("Depercated Address")]
-    DeprecatedAddress,     // 6002
+    DeprecatedAddress,             // 6002
     
     #[msg("Invalid Amount")]
-    InvalidAmount,         // 6003
+    InvalidAmount,                 // 6003
     
     #[msg("Overflow")]
-    Overflow,              // 6004
+    Overflow,                      // 6004
     
     #[msg("Winner Is Not Determine")]
-    WinnerIsNotDetermine,  // 6005
+    WinnerIsNotDetermine,          // 6005
+    
+    #[msg("Invalid Creator Key And Treasury")]
+    InvalidCreatorKeyAndTreasury,  //6006
 }
