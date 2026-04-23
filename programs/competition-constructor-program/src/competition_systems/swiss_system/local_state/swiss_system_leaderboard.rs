@@ -35,31 +35,6 @@ impl LeaderBoard {
     }
 }
 
-// impl LeaderBoard {
-//     pub fn insert_and_sort(&mut self, participant: ParticipantData) -> Result<()> {
-//         // Если список не полон, просто добавляем
-//         if self.list.len() < LEADER_BOARD_LIMIT {
-//             self.list.push(participant);
-//         } else {
-//             // Если полон, проверяем, лучше ли новый участник худшего (последнего)
-//             if let Some(last) = self.list.last() {
-//                 if participant.points > last.points {
-//                     // Заменяем худшего
-//                     *self.list.last_mut().unwrap() = participant;
-//                 } else {
-//                     // Не добавляем, если хуже
-//                     return Ok(());
-//                 }
-//             }
-//         }
-
-//         // Сортируем по убыванию очков (выше — больше points)
-//         self.list.sort_unstable_by(|a, b| b.points.cmp(&a.points));
-
-//         Ok(())
-//     }
-// }
-
 #[derive(
     AnchorSerialize,
     AnchorDeserialize,
