@@ -37,6 +37,7 @@ pub struct ProgramConfigUpdate<'info> {
     pub program_config: Account<'info, ProgramConfig>,
 }
 
+// @TODO: refact code and create common validate function with checks is keys are not equal
 impl<'info> ProgramConfigUpdate<'info> {
     pub fn program_config_update_authority(
         ctx: Context<Self>,

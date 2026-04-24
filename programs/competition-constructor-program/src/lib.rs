@@ -23,7 +23,7 @@ pub mod competition_constructor_program {
             program_config_init(ctx, args)
     }
 
-    pub fn program_config_update(
+    pub fn program_config_update_authority(
         ctx: Context<ProgramConfigUpdate>,
         args: ProgramConfigUpdateAuthorityArgs,
     ) -> Result<()> {
@@ -39,7 +39,7 @@ pub mod competition_constructor_program {
             program_config_update_creator_key(ctx, args)
     }
 
-    pub fn program_config_update_tresury(
+    pub fn program_config_update_treasury(
         ctx: Context<ProgramConfigUpdate>,
         args: ProgramConfigUpdateTreasuryArgs,
     ) -> Result<()> {
