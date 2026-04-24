@@ -69,6 +69,8 @@ impl<'info> ProgramConfigInit<'info> {
             bump,
         });
 
+        ctx.accounts.program_config.invariant()?;
+
         Ok(())
     }
 }

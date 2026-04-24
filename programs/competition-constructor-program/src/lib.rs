@@ -23,28 +23,28 @@ pub mod competition_constructor_program {
             program_config_init(ctx, args)
     }
 
-    pub fn program_config_update_authority(
+    pub fn program_config_authority_update(
         ctx: Context<ProgramConfigUpdate>,
-        args: ProgramConfigUpdateAuthorityArgs,
+        args: ProgramConfigUpdateArgs,
     ) -> Result<()> {
         ProgramConfigUpdate::
-            program_config_update_authority(ctx, args)
+            program_config_authority_update(ctx, args)
     }
 
-    pub fn program_config_update_creator_key(
+    pub fn program_config_creator_key_update(
         ctx: Context<ProgramConfigUpdate>,
-        args: ProgramConfigUpdateCreatorKeyArgs,
+        args: ProgramConfigUpdateArgs,
     ) -> Result<()> {
         ProgramConfigUpdate::
-            program_config_update_creator_key(ctx, args)
+            program_config_creator_key_update(ctx, args)
     }
 
-    pub fn program_config_update_treasury(
+    pub fn program_config_treasury_update(
         ctx: Context<ProgramConfigUpdate>,
-        args: ProgramConfigUpdateTreasuryArgs,
+        args: ProgramConfigUpdateArgs,
     ) -> Result<()> {
         ProgramConfigUpdate::
-            progmram_config_update_treasury(ctx, args)
+            program_config_treasury_update(ctx, args)
     }
 
     pub fn constructor_create(

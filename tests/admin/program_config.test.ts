@@ -162,8 +162,8 @@ describe('program_config_update tests', () => {
  
     await expect(
       program.methods
-        .programConfigUpdateAuthority({
-          authority: unauthorized.publicKey,
+        .programConfigAuthorityUpdate({
+          account: unauthorized.publicKey,
         })
         .accounts({
           authority: unauthorized.publicKey,
@@ -194,8 +194,8 @@ describe('program_config_update tests', () => {
     // const balance = await provider.connection.getBalance(newAuthority.publicKey);
 
     await program.methods
-      .programConfigUpdateAuthority({
-        authority: newAuthority.publicKey,
+      .programConfigAuthorityUpdate({
+        account: newAuthority.publicKey,
       })
       .accounts({
         authority: provider.wallet.publicKey,
@@ -210,8 +210,8 @@ describe('program_config_update tests', () => {
       ).not.toBe(true);
 
       await program.methods
-      .programConfigUpdateAuthority({
-        authority: provider.wallet.publicKey,
+      .programConfigAuthorityUpdate({
+        account: provider.wallet.publicKey,
       })
       .accounts({
         authority: newAuthority.publicKey,
@@ -227,8 +227,8 @@ describe('program_config_update tests', () => {
   
       await expect(
         program.methods
-          .programConfigUpdateAuthority({
-            authority: provider.wallet.publicKey,
+          .programConfigAuthorityUpdate({
+            account: provider.wallet.publicKey,
           })
           .accounts({
             authority: provider.wallet.publicKey,
@@ -249,8 +249,8 @@ describe('program_config_update tests', () => {
       const newCreatorKey = anchor.web3.Keypair.generate();
 
       await program.methods
-        .programConfigUpdateCreatorKey({
-          creatorKey: newCreatorKey.publicKey,
+        .programConfigCreatorKeyUpdate({
+          account: newCreatorKey.publicKey,
         })
         .accounts({
           authority: provider.wallet.publicKey,
@@ -270,8 +270,8 @@ describe('program_config_update tests', () => {
 
     await expect(
       program.methods
-        .programConfigUpdateCreatorKey({
-          creatorKey: prevCreatorKey,
+        .programConfigCreatorKeyUpdate({
+          account: prevCreatorKey,
         })
         .accounts({
           authority: provider.wallet.publicKey,
@@ -292,8 +292,8 @@ describe('program_config_update tests', () => {
     const newTreasury = anchor.web3.Keypair.generate();
 
     await program.methods
-      .programConfigUpdateTreasury({
-        treasury: newTreasury.publicKey,
+      .programConfigTreasuryUpdate({
+        account: newTreasury.publicKey,
       })
       .accounts({
         authority: provider.wallet.publicKey,
@@ -313,8 +313,8 @@ describe('program_config_update tests', () => {
 
     await expect(
       program.methods
-        .programConfigUpdateTreasury({
-          treasury: prevTreasury,
+        .programConfigTreasuryUpdate({
+          account: prevTreasury,
         })
         .accounts({
           authority: provider.wallet.publicKey,

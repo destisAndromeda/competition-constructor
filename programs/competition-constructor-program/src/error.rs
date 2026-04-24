@@ -22,4 +22,10 @@ pub enum CustomError {
     
     #[msg("Invalid Creator Key And Treasury")]
     InvalidCreatorKeyAndTreasury,  //6006
+
+    #[msg("Invalid Account")]
+    InvalidAccount,                // 6007
+
+    #[msg("Same Accounts")]
+    SameAccounts,
 }

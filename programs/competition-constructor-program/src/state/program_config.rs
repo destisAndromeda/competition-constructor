@@ -1,5 +1,7 @@
 use anchor_lang::prelude::*;
 
+use crate::error::*;
+
 #[account]
 #[derive(InitSpace)]
 pub struct ProgramConfig {
@@ -17,4 +19,34 @@ pub struct ProgramConfig {
 
     /// Bump for ProgramConfig account PDA
     pub bump: u8,
+}
+
+impl ProgramConfig {
+    pub fn invariant(&self) -> Result<()> {
+        require_keys_neq!(
+            self.authority,
+            Pubkey::default(),
+            CustomError::InvalidAccount,
+        );
+        
+        require_keys_neq!(
+            self.creator_key,
+            Pubkey::default(),
+            CustomError::InvalidAccount,
+        );
+
+        require_keys_neq!(
+            self.treasury,
+            Pubkey::default(),
+            CustomError::InvalidAccount,
+        );
+
+        require_keys_neq!(
+            self.treasury,
+            self.creator_key,
+            CustomError::SameAccounts,
+        );
+
+        Ok(())
+    }
 }
