@@ -5,7 +5,7 @@ use crate::seeds::*;
 use crate::error::*;
 
 #[derive(AnchorSerialize, AnchorDeserialize)]
-pub struct ConstructorUpdateTransactionFeeArgs {
+pub struct ConstructorTransactionFeeUpdateArgs {
     pub transaction_fee: u64,
 }
 
@@ -71,9 +71,9 @@ impl<'info> ConstructorUpdate<'info> {
 
         Ok(())
     }
-    
+
     #[access_control(ctx.accounts.validate(&args))]
-    pub fn constructor_update_authority(
+    pub fn constructor_authority_update(
         ctx: Context<Self>,
         args: ConstructorUpdateArgs,
     ) -> Result<()> {
@@ -87,7 +87,7 @@ impl<'info> ConstructorUpdate<'info> {
     }
 
     #[access_control(ctx.accounts.validate(&args))]
-    pub fn constructor_update_creator_key(
+    pub fn constructor_creator_key_update(
         ctx: Context<Self>,
         args: ConstructorUpdateArgs,
     ) -> Result<()> {
@@ -100,9 +100,9 @@ impl<'info> ConstructorUpdate<'info> {
         Ok(())
     }
 
-    pub fn constructor_update_transaction_fee(
+    pub fn constructor_transaction_fee_update(
         ctx: Context<Self>,
-        args: ConstructorUpdateTransactionFeeArgs,
+        args: ConstructorTransactionFeeUpdateArgs,
     ) -> Result<()> {
         let constructor = &mut ctx.accounts.constructor;
 

@@ -51,7 +51,7 @@ describe('constructor_create tests', () => {
         .signers([state.creatorKeyConfig])
         .rpc()
     ).to.be.rejected.then((err: any) => {
-      expect(err.error.errorCode.code).to.equals('InvalidAccount');
+      expect(err.error.errorCode.code).to.equals('SameAccounts');
     });
   });
 
@@ -120,3 +120,7 @@ describe('constructor_create tests', () => {
     ).to.be.rejectedWith(/already in use/i);
   });
 });
+
+// describe('constru', () => {
+
+// });

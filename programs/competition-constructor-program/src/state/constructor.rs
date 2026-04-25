@@ -38,7 +38,7 @@ impl Constructor {
         require_keys_neq!(
             self.creator_key,
             self.authority,
-            CustomError::InvalidAccount,
+            CustomError::SameAccounts,
         );
 
         Ok(())

@@ -56,7 +56,6 @@ impl<'info> ConstructorCreate<'info> {
             ..
         } = self;
 
-        // @TODO: change InvalidAccount to SameAccounts
         require_keys_neq!(
             creator_key.key(),
             args.creator_key,
