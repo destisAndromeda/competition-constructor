@@ -4,13 +4,13 @@ import { PublicKey } from '@solana/web3.js';
 import { CompetitionConstructorProgram } from '../target/types/competition_constructor_program';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
+import { 
+  state,
+} from './shared.ts';
 
 const { expect } = chai;
 
 chai.use(chaiAsPromised);
-
-const SEED_PREFIX = "competition_constructor";
-const SEED_PROGRAM_CONFIG = "program_config";
 
 let provider = anchor.AnchorProvider.env();
 anchor.setProvider(provider);
@@ -18,24 +18,10 @@ anchor.setProvider(provider);
 const program = anchor.workspace.CompetitionConstructorProgram as Program<CompetitionConstructorProgram>;
 const systemProgram = anchor.web3.SystemProgram.programId;
 
-let programConfigPda: any;
-let creatorKey: any;
-let treasury: any;
-
-// before(() => {  
-  [programConfigPda] = PublicKey.findProgramAddressSync(
-    [Buffer.from(SEED_PREFIX), Buffer.from(SEED_PROGRAM_CONFIG)],
-    program.programId,
-  );
-
-  creatorKey = anchor.web3.Keypair.generate();
-  treasury = anchor.web3.Keypair.generate();
-// });
-
 after(async () => {
   try {
-    const configAccount = await program.account.programConfig.fetch(programConfigPda);
-    expect(configAccount.treasury.equals(configAccount.creatorKey)).not.toBe(true);
+    const configAccount = await program.account.programConfig.fetch(state.programConfigPda);
+    expect(configAccount.state.treasury.equals(configAccount.state.creatorKeyConfig)).to.be.false;
   } catch(e) {
     // skip
   }
@@ -53,10 +39,10 @@ describe('prgoram_config_init tests', () => {
         })
         .accounts({
           authority: provider.wallet.publicKey,
-          programConfig: programConfigPda,
+          programConfig: state.programConfigPda,
         })
         .rpc()
-    ).to.be.rejected.then((err) => {
+    ).to.be.rejected.then((err: any) => {
       expect(err.error.errorCode.code).to.equal('InvalidAccount');
     });
   });
@@ -75,22 +61,22 @@ describe('prgoram_config_init tests', () => {
     await expect(
       program.methods
         .programConfigInit({
-          creatorKey: creatorKey.publicKey,
-          treasury: treasury.publicKey,
+          creatorKey: state.creatorKeyConfig.publicKey,
+          treasury: state.treasury.publicKey,
         })
         .accounts({
           authority: unauthorized.publicKey,
-          programConfig: programConfigPda,
+          programConfig: state.programConfigPda,
           systemProgram: systemProgram,
         })
         .signers([unauthorized])
         .rpc()
-    ).to.be.rejected.then((err) => {
+    ).to.be.rejected.then((err: any) => {
       expect(err.error.errorCode.code).to.equal('Unauthorized');
     });
   });
 
-  it('error: should fail with equals creatorKey and treasury', async () => {
+  it('error: should fail with equals creatorKey and state.treasury', async () => {
     const same = anchor.web3.Keypair.generate();
 
     await expect(
@@ -101,11 +87,11 @@ describe('prgoram_config_init tests', () => {
         })
         .accounts({
           authority: provider.wallet.publicKey,
-          programConfig: programConfigPda,
+          programConfig: state.programConfigPda,
           systemProgram: systemProgram,
         })
         .rpc()
-    ).to.be.rejected.then((err) => {
+    ).to.be.rejected.then((err: any) => {
       expect(err.error.errorCode.code).to.equal('SameAccounts');
     });
   });
@@ -113,41 +99,41 @@ describe('prgoram_config_init tests', () => {
   it('initialize', async () => {  
     await program.methods
       .programConfigInit({
-          creatorKey: creatorKey.publicKey,
-          treasury: treasury.publicKey,
+          creatorKey: state.creatorKeyConfig.publicKey,
+          treasury: state.treasury.publicKey,
         })
       .accounts({
         authority: provider.wallet.publicKey,
-        programConfig: programConfigPda,
+        programConfig: state.programConfigPda,
         systemProgram: systemProgram,
       })
       .rpc();
 
-    const configAccount = await program.account.programConfig.fetch(programConfigPda);
+    const configAccount = await program.account.programConfig.fetch(state.programConfigPda);
 
     expect(configAccount.authority.equals(provider.wallet.publicKey)).to.be.true;
-    expect(configAccount.creatorKey.equals(creatorKey.publicKey)).to.be.true;
-    expect(configAccount.treasury.equals(treasury.publicKey)).to.be.true;
+    expect(configAccount.creatorKey.equals(state.creatorKeyConfig.publicKey)).to.be.true;
+    expect(configAccount.treasury.equals(state.treasury.publicKey)).to.be.true;
   });
 
   it('error: can not initialize program config twice ', async () => {
     await expect(
       program.methods
         .programConfigInit({
-          creatorKey: creatorKey.publicKey,
-          treasury: treasury.publicKey,
+          creatorKey: state.creatorKeyConfig.publicKey,
+          treasury: state.treasury.publicKey,
         })
         .accounts({
           authority: provider.wallet.publicKey,
-          programConfig: programConfigPda,
+          programConfig: state.programConfigPda,
           systemProgram: systemProgram,
         })
         .rpc()
     ).to.be.rejectedWith(/already in use/i);
   });
 
-  it('creator_key and treasury are not equal', async () => {
-    const configAccount = await program.account.programConfig.fetch(programConfigPda);
+  it('creator_key and state.treasury are not equal', async () => {
+    const configAccount = await program.account.programConfig.fetch(state.programConfigPda);
     expect(
       configAccount.creatorKey.equals(configAccount.treasury)
     ).to.be.false;
@@ -172,17 +158,17 @@ describe('program_config_update tests', () => {
         })
         .accounts({
           authority: unauthorized.publicKey,
-          programConfig: programConfigPda,
+          programConfig: state.programConfigPda,
         })
         .signers([unauthorized])
         .rpc()
-    ).to.be.rejected.then((err) => {
+    ).to.be.rejected.then((err: any) => {
       expect(err.error.errorCode.code).to.equal('Unauthorized');
     });
   });
 
   it('authority update', async () => {
-    const prevAuthority = (await program.account.programConfig.fetch(programConfigPda)).authority;
+    const prevAuthority = (await program.account.programConfig.fetch(state.programConfigPda)).authority;
     const newAuthority = anchor.web3.Keypair.generate();
 
     const signature = await provider.connection.requestAirdrop(
@@ -199,11 +185,11 @@ describe('program_config_update tests', () => {
       })
       .accounts({
         authority: provider.wallet.publicKey,
-        programConfig: programConfigPda,
+        programConfig: state.programConfigPda,
       })
       .rpc();
 
-      const configAccount = await program.account.programConfig.fetch(programConfigPda);
+      const configAccount = await program.account.programConfig.fetch(state.programConfigPda);
 
       expect(
         configAccount.authority.equals(prevAuthority)
@@ -215,54 +201,64 @@ describe('program_config_update tests', () => {
       })
       .accounts({
         authority: newAuthority.publicKey,
-        programConfig: programConfigPda,
+        programConfig: state.programConfigPda,
       })
       .signers([newAuthority])
       .rpc();
   });
 
-    it('error: should fail with previous authority', async () => {
-      // const configAccount = await program.account.programConfig.fetch(programConfigPda); 
-      // console.log('program config authority: ', configAccount.authority);
-  
-      await expect(
-        program.methods
-          .programConfigAuthorityUpdate({
-            account: provider.wallet.publicKey,
-          })
-          .accounts({
-            authority: provider.wallet.publicKey,
-            programConfig: programConfigPda,
-          })
-          .rpc()
-        ).to.be.rejected.then((err) => {
-          expect(err.error.errorCode.code).to.equal('DeprecatedAddress');
-        });
-    });
+  it('error: should fail with previous authority', async () => {
+    // const configAccount = await program.account.programConfig.fetch(state.programConfigPda); 
+    // console.log('program config authority: ', configAccount.authority);
 
-    it('creatorKey update', async () => {
-      const prevCreatorKey = (await program.account.programConfig.fetch(programConfigPda)).creatorKey;
-      const newCreatorKey = anchor.web3.Keypair.generate();
-
-      await program.methods
-        .programConfigCreatorKeyUpdate({
-          account: newCreatorKey.publicKey,
+    await expect(
+      program.methods
+        .programConfigAuthorityUpdate({
+          account: provider.wallet.publicKey,
         })
         .accounts({
           authority: provider.wallet.publicKey,
-          programConfig: programConfigPda,
+          programConfig: state.programConfigPda,
+        })
+        .rpc()
+      ).to.be.rejected.then((err: any) => {
+        expect(err.error.errorCode.code).to.equal('DeprecatedAddress');
+      });
+  });
+
+  it('creatorKey update', async () => {
+    const prevCreatorKey = (await program.account.programConfig.fetch(state.programConfigPda)).creatorKey;
+    const newCreatorKey = anchor.web3.Keypair.generate();
+
+    await program.methods
+      .programConfigCreatorKeyUpdate({
+        account: newCreatorKey.publicKey,
+      })
+      .accounts({
+        authority: provider.wallet.publicKey,
+        programConfig: state.programConfigPda,
+      })
+      .rpc();
+
+      const configAccount = await program.account.programConfig.fetch(state.programConfigPda);
+
+      expect(
+        configAccount.creatorKey.equals(prevCreatorKey)
+      ).to.be.false;
+
+      await program.methods
+        .programConfigCreatorKeyUpdate({
+          account: prevCreatorKey,
+        })
+        .accounts({
+          authority: provider.wallet.publicKey,
+          programConfig: state.programConfigPda,
         })
         .rpc();
+  });
 
-        const configAccount = await program.account.programConfig.fetch(programConfigPda);
-
-        expect(
-          configAccount.creatorKey.equals(prevCreatorKey)
-        ).to.be.false;
-    });
-
-  it('error: should fail with previous creatorKey', async () => {
-    const prevCreatorKey = (await program.account.programConfig.fetch(programConfigPda)).creatorKey;
+  it('error: should fail with previous state.creatorKeyConfig', async () => {
+    const prevCreatorKey = (await program.account.programConfig.fetch(state.programConfigPda)).creatorKey;
 
     await expect(
       program.methods
@@ -271,16 +267,16 @@ describe('program_config_update tests', () => {
         })
         .accounts({
           authority: provider.wallet.publicKey,
-          programConfig: programConfigPda,
+          programConfig: state.programConfigPda,
         })
         .rpc()
-    ).to.be.rejected.then((err) => {
+    ).to.be.rejected.then((err: any) => {
       expect(err.error.errorCode.code).to.equal('DeprecatedAddress');
     });
   });
 
-  it('treasury update', async () => {
-    const prevTreasury = (await program.account.programConfig.fetch(programConfigPda)).treasury;
+  it('state.treasury update', async () => {
+    const prevTreasury = (await program.account.programConfig.fetch(state.programConfigPda)).treasury;
     const newTreasury = anchor.web3.Keypair.generate();
 
     await program.methods
@@ -289,19 +285,19 @@ describe('program_config_update tests', () => {
       })
       .accounts({
         authority: provider.wallet.publicKey,
-        programConfig: programConfigPda,
+        programConfig: state.programConfigPda,
       })
       .rpc();
 
-      const configAccount = await program.account.programConfig.fetch(programConfigPda);
+      const configAccount = await program.account.programConfig.fetch(state.programConfigPda);
 
       expect(
         configAccount.treasury.equals(prevTreasury)
       ).to.be.false;
   });
 
-  it('error: should fail with previous treasury', async () => {
-    const prevTreasury = (await program.account.programConfig.fetch(programConfigPda)).treasury;
+  it('error: should fail with previous state.treasury', async () => {
+    const prevTreasury = (await program.account.programConfig.fetch(state.programConfigPda)).treasury;
 
     await expect(
       program.methods
@@ -310,10 +306,10 @@ describe('program_config_update tests', () => {
         })
         .accounts({
           authority: provider.wallet.publicKey,
-          programConfig: programConfigPda,
+          programConfig: state.programConfigPda,
         })
         .rpc()
-    ).to.be.rejected.then((err) => {
+    ).to.be.rejected.then((err: any) => {
       expect(err.error.errorCode.code).to.equal('DeprecatedAddress');
     });
   });

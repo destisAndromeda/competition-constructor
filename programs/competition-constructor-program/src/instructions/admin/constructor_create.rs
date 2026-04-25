@@ -50,6 +50,23 @@ pub struct ConstructorCreate<'info> {
 }
 
 impl<'info> ConstructorCreate<'info> {
+    fn validate(&self, args: &ConstructorCreateArgs) -> Result<()> {
+        let Self {
+            creator_key,
+            ..
+        } = self;
+
+        // @TODO: change InvalidAccount to SameAccounts
+        require_keys_neq!(
+            creator_key.key(),
+            args.creator_key,
+            CustomError::InvalidAccount,
+        );
+
+        Ok(())
+    }
+
+    #[access_control(ctx.accounts.validate(&args))]
     pub fn constructor_create(ctx: Context<Self>, args: ConstructorCreateArgs) -> Result<()> {
         let authority = args.authority;
         let creator_key = args.creator_key;

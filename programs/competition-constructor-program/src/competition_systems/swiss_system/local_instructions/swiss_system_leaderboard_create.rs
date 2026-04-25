@@ -69,6 +69,7 @@ pub struct SwissSystemLeaderBoardCreate<'info> {
 }
 
 impl<'info> SwissSystemLeaderBoardCreate<'info> {
+
     pub fn swiss_system_leaderboard_create(
         ctx: Context<Self>,
         args: SwissSystemLeaderBoardCreateArgs,

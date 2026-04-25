@@ -57,7 +57,7 @@ pub mod competition_constructor_program {
 
     pub fn constructor_update_authority(
         ctx: Context<ConstructorUpdate>,
-        args: ConstructorUpdateAuthorityArgs,
+        args: ConstructorUpdateArgs,
     ) -> Result<()> {
         ConstructorUpdate::
             constructor_update_authority(ctx, args)
@@ -65,19 +65,19 @@ pub mod competition_constructor_program {
 
     pub fn constructor_update_creator_key(
         ctx: Context<ConstructorUpdate>,
-        args: ConstructorUpdateCreatorKeyArgs,
+        args: ConstructorUpdateArgs,
         ) -> Result<()> {
         ConstructorUpdate::
             constructor_update_creator_key(ctx, args)
     }
 
-    pub fn constructor_update_transaction_fee(
-        ctx: Context<ConstructorUpdate>,
-        args: ConstructorUpdateTransactionFeeArgs,
-    ) -> Result<()> {
-        ConstructorUpdate::
-            constructor_update_transaction_fee(ctx, args)
-    }
+    // pub fn constructor_update_transaction_fee(
+    //     ctx: Context<ConstructorUpdate>,
+    //     args: ConstructorUpdateTransactionFeeArgs,
+    // ) -> Result<()> {
+    //     ConstructorUpdate::
+    //         constructor_update_transaction_fee(ctx, args)
+    // }
 
     pub fn swiss_system_create(
         ctx: Context<SwissSystemCreate>,
