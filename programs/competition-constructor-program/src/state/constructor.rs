@@ -1,5 +1,7 @@
 use anchor_lang::prelude::*;
 
+use crate::error::*;
+
 #[account]
 #[derive(InitSpace)]
 pub struct Constructor {
@@ -17,4 +19,28 @@ pub struct Constructor {
 
     /// Bump for Constructor account PDA seeds
     pub bump: u8,
+}
+
+impl Constructor {
+    pub fn invariant(&self) -> Result<()> {
+        require_keys_neq!(
+            self.authority,
+            Pubkey::default(),
+            CustomError::InvalidAccount,
+        );
+
+        require_keys_neq!(
+            self.creator_key,
+            Pubkey::default(),
+            CustomError::InvalidAccount,
+        );
+
+        require_keys_neq!(
+            self.creator_key,
+            self.authority,
+            CustomError::InvalidAccount,
+        );
+
+        Ok(())
+    }
 }

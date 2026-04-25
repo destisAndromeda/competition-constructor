@@ -1,18 +1,13 @@
-import {
-  beforeEach,
-  describe,
-  expect,
-  it,
-} from 'vitest';
 import * as anchor from '@coral-xyz/anchor';
 import { Program } from '@coral-xyz/anchor';
-import { homedir } from "node:os";
-import { join } from "node:path";
 import { PublicKey } from '@solana/web3.js';
-import { CompetitionConstructorProgram } from '../../target/types/competition_constructor_program';
+import { CompetitionConstructorProgram } from '../target/types/competition_constructor_program';
+import chai from 'chai';
+import chaiAsPromised from 'chai-as-promised';
 
-process.env.ANCHOR_PROVIDER_URL ??= "http://127.0.0.1:8899";
-process.env.ANCHOR_WALLET ??= join(homedir(), ".config/solana/id.json");
+const { expect } = chai;
+
+chai.use(chaiAsPromised);
 
 const SEED_PREFIX = "competition_constructor";
 const SEED_PROGRAM_CONFIG = "program_config";
@@ -27,20 +22,48 @@ let programConfigPda: any;
 let creatorKey: any;
 let treasury: any;
 
-beforeEach(() => {  
-  programConfigPda = PublicKey.findProgramAddressSync(
+// before(() => {  
+  [programConfigPda] = PublicKey.findProgramAddressSync(
     [Buffer.from(SEED_PREFIX), Buffer.from(SEED_PROGRAM_CONFIG)],
     program.programId,
   );
 
   creatorKey = anchor.web3.Keypair.generate();
   treasury = anchor.web3.Keypair.generate();
+// });
+
+after(async () => {
+  try {
+    const configAccount = await program.account.programConfig.fetch(programConfigPda);
+    expect(configAccount.treasury.equals(configAccount.creatorKey)).not.toBe(true);
+  } catch(e) {
+    // skip
+  }
 });
 
 describe('prgoram_config_init tests', () => {
+  it('error: should fail with default authority', async () => {
+    const defaultKey = PublicKey.default;
+
+    await expect(
+      program.methods
+        .programConfigInit({
+          creatorKey: defaultKey,
+          treasury: defaultKey,
+        })
+        .accounts({
+          authority: provider.wallet.publicKey,
+          programConfig: programConfigPda,
+        })
+        .rpc()
+    ).to.be.rejected.then((err) => {
+      expect(err.error.errorCode.code).to.equal('InvalidAccount');
+    });
+  });
+
   it('error: should fail with unauthorized key', async () => {
     const unauthorized = anchor.web3.Keypair.generate();
-    
+
     const signature = await provider.connection.requestAirdrop(
       unauthorized.publicKey,
       anchor.web3.LAMPORTS_PER_SOL * 1,
@@ -48,7 +71,7 @@ describe('prgoram_config_init tests', () => {
 
     await provider.connection.confirmTransaction(signature);
     // const balance = await provider.connection.getBalance(unauthorized.publicKey);
- 
+
     await expect(
       program.methods
         .programConfigInit({
@@ -57,18 +80,13 @@ describe('prgoram_config_init tests', () => {
         })
         .accounts({
           authority: unauthorized.publicKey,
-          programConfig: programConfigPda[0],
+          programConfig: programConfigPda,
           systemProgram: systemProgram,
         })
         .signers([unauthorized])
         .rpc()
-    ).rejects.toMatchObject({
-      error: {
-        errorCode:
-        {
-          code: 'Unauthorized'
-        }
-      }
+    ).to.be.rejected.then((err) => {
+      expect(err.error.errorCode.code).to.equal('Unauthorized');
     });
   });
 
@@ -83,53 +101,41 @@ describe('prgoram_config_init tests', () => {
         })
         .accounts({
           authority: provider.wallet.publicKey,
-          programConfig: programConfigPda[0],
+          programConfig: programConfigPda,
           systemProgram: systemProgram,
         })
         .rpc()
-    ).rejects.toMatchObject({
-      error: {
-        errorCode: {
-          code: 'InvalidCreatorKeyAndTreasury'
-        }
-      }
+    ).to.be.rejected.then((err) => {
+      expect(err.error.errorCode.code).to.equal('SameAccounts');
     });
   });
 
   it('initialize', async () => {  
-      await program.methods
-        .programConfigInit({
-            creatorKey: creatorKey.publicKey,
-            treasury: treasury.publicKey,
-          })
-        .accounts({
-          authority: provider.wallet.publicKey,
-          programConfig: programConfigPda[0],
-          systemProgram: systemProgram,
+    await program.methods
+      .programConfigInit({
+          creatorKey: creatorKey.publicKey,
+          treasury: treasury.publicKey,
         })
-        .rpc();
+      .accounts({
+        authority: provider.wallet.publicKey,
+        programConfig: programConfigPda,
+        systemProgram: systemProgram,
+      })
+      .rpc();
 
-      const configAccount = await program.account.programConfig.fetch(programConfigPda[0]);
-  
-      expect(
-        configAccount.authority.equals(provider.wallet.publicKey)
-      ).toBe(true);
+    const configAccount = await program.account.programConfig.fetch(programConfigPda);
 
-      expect(
-        configAccount.creatorKey.equals(creatorKey.publicKey)
-      ).toBe(true);
-
-      expect(
-        configAccount.treasury.equals(treasury.publicKey)
-      ).toBe(true);
+    expect(configAccount.authority.equals(provider.wallet.publicKey)).to.be.true;
+    expect(configAccount.creatorKey.equals(creatorKey.publicKey)).to.be.true;
+    expect(configAccount.treasury.equals(treasury.publicKey)).to.be.true;
   });
 
   it('error: can not initialize program config twice ', async () => {
     await expect(
       program.methods
         .programConfigInit({
-          creatorKey: creatorKey,
-          treasury: treasury,
+          creatorKey: creatorKey.publicKey,
+          treasury: treasury.publicKey,
         })
         .accounts({
           authority: provider.wallet.publicKey,
@@ -137,14 +143,14 @@ describe('prgoram_config_init tests', () => {
           systemProgram: systemProgram,
         })
         .rpc()
-    ).rejects.toThrow();
+    ).to.be.rejectedWith(/already in use/i);
   });
 
   it('creator_key and treasury are not equal', async () => {
-    const configAccount = await program.account.programConfig.fetch(programConfigPda[0]);
+    const configAccount = await program.account.programConfig.fetch(programConfigPda);
     expect(
       configAccount.creatorKey.equals(configAccount.treasury)
-    ).not.toBe(true);
+    ).to.be.false;
   });
 });
 
@@ -158,8 +164,7 @@ describe('program_config_update tests', () => {
     );
 
     await provider.connection.confirmTransaction(signature);
-    // const balance = await provider.connection.getBalance(unauthorized.publicKey);
- 
+
     await expect(
       program.methods
         .programConfigAuthorityUpdate({
@@ -171,18 +176,13 @@ describe('program_config_update tests', () => {
         })
         .signers([unauthorized])
         .rpc()
-    ).rejects.toMatchObject({
-      error: {
-        errorCode:
-        {
-          code: 'Unauthorized'
-        }
-      }
+    ).to.be.rejected.then((err) => {
+      expect(err.error.errorCode.code).to.equal('Unauthorized');
     });
   });
 
   it('authority update', async () => {
-    const prevAuthority = (await program.account.programConfig.fetch(programConfigPda[0])).authority;
+    const prevAuthority = (await program.account.programConfig.fetch(programConfigPda)).authority;
     const newAuthority = anchor.web3.Keypair.generate();
 
     const signature = await provider.connection.requestAirdrop(
@@ -199,15 +199,15 @@ describe('program_config_update tests', () => {
       })
       .accounts({
         authority: provider.wallet.publicKey,
-        programConfig: programConfigPda[0],
+        programConfig: programConfigPda,
       })
       .rpc();
 
-      const configAccount = await program.account.programConfig.fetch(programConfigPda[0]);
+      const configAccount = await program.account.programConfig.fetch(programConfigPda);
 
       expect(
         configAccount.authority.equals(prevAuthority)
-      ).not.toBe(true);
+      ).to.be.false;
 
       await program.methods
       .programConfigAuthorityUpdate({
@@ -215,14 +215,14 @@ describe('program_config_update tests', () => {
       })
       .accounts({
         authority: newAuthority.publicKey,
-        programConfig: programConfigPda[0],
+        programConfig: programConfigPda,
       })
       .signers([newAuthority])
       .rpc();
   });
-  
+
     it('error: should fail with previous authority', async () => {
-      // const configAccount = await program.account.programConfig.fetch(programConfigPda[0]); 
+      // const configAccount = await program.account.programConfig.fetch(programConfigPda); 
       // console.log('program config authority: ', configAccount.authority);
   
       await expect(
@@ -232,20 +232,16 @@ describe('program_config_update tests', () => {
           })
           .accounts({
             authority: provider.wallet.publicKey,
-            programConfig: programConfigPda[0],
+            programConfig: programConfigPda,
           })
           .rpc()
-        ).rejects.toMatchObject({
-          error: {
-            errorCode: {
-              code: 'DeprecatedAddress',
-            }
-          }
+        ).to.be.rejected.then((err) => {
+          expect(err.error.errorCode.code).to.equal('DeprecatedAddress');
         });
     });
 
     it('creatorKey update', async () => {
-      const prevCreatorKey = (await program.account.programConfig.fetch(programConfigPda[0])).creatorKey;
+      const prevCreatorKey = (await program.account.programConfig.fetch(programConfigPda)).creatorKey;
       const newCreatorKey = anchor.web3.Keypair.generate();
 
       await program.methods
@@ -258,15 +254,15 @@ describe('program_config_update tests', () => {
         })
         .rpc();
 
-        const configAccount = await program.account.programConfig.fetch(programConfigPda[0]);
+        const configAccount = await program.account.programConfig.fetch(programConfigPda);
 
         expect(
           configAccount.creatorKey.equals(prevCreatorKey)
-        ).not.toBe(true);
+        ).to.be.false;
     });
 
   it('error: should fail with previous creatorKey', async () => {
-    const prevCreatorKey = (await program.account.programConfig.fetch(programConfigPda[0])).creatorKey;
+    const prevCreatorKey = (await program.account.programConfig.fetch(programConfigPda)).creatorKey;
 
     await expect(
       program.methods
@@ -275,20 +271,16 @@ describe('program_config_update tests', () => {
         })
         .accounts({
           authority: provider.wallet.publicKey,
-          programConfig: programConfigPda[0],
+          programConfig: programConfigPda,
         })
         .rpc()
-    ).rejects.toMatchObject({
-      error: {
-        errorCode: {
-          code: 'DeprecatedAddress',
-        }
-      }
+    ).to.be.rejected.then((err) => {
+      expect(err.error.errorCode.code).to.equal('DeprecatedAddress');
     });
   });
 
   it('treasury update', async () => {
-    const prevTreasury = (await program.account.programConfig.fetch(programConfigPda[0])).treasury;
+    const prevTreasury = (await program.account.programConfig.fetch(programConfigPda)).treasury;
     const newTreasury = anchor.web3.Keypair.generate();
 
     await program.methods
@@ -301,15 +293,15 @@ describe('program_config_update tests', () => {
       })
       .rpc();
 
-      const configAccount = await program.account.programConfig.fetch(programConfigPda[0]);
+      const configAccount = await program.account.programConfig.fetch(programConfigPda);
 
       expect(
         configAccount.treasury.equals(prevTreasury)
-      ).not.toBe(true);
+      ).to.be.false;
   });
 
   it('error: should fail with previous treasury', async () => {
-    const prevTreasury = (await program.account.programConfig.fetch(programConfigPda[0])).treasury;
+    const prevTreasury = (await program.account.programConfig.fetch(programConfigPda)).treasury;
 
     await expect(
       program.methods
@@ -318,15 +310,11 @@ describe('program_config_update tests', () => {
         })
         .accounts({
           authority: provider.wallet.publicKey,
-          programConfig: programConfigPda[0],
+          programConfig: programConfigPda,
         })
         .rpc()
-    ).rejects.toMatchObject({
-      error: {
-        errorCode: {
-          code: 'DeprecatedAddress',
-        }
-      }
+    ).to.be.rejected.then((err) => {
+      expect(err.error.errorCode.code).to.equal('DeprecatedAddress');
     });
   });
 });

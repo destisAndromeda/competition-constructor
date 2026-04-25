@@ -42,17 +42,6 @@ pub struct ProgramConfigInit<'info> {
 }
 
 impl<'info> ProgramConfigInit<'info> {
-    fn validate(args: &ProgramConfigInitArgs) -> Result<()> {
-        require_keys_neq!(
-            args.creator_key.key(),
-            args.treasury.key(),
-            CustomError::InvalidCreatorKeyAndTreasury,
-        );
-
-        Ok(())
-    }
-
-    #[access_control(Self::validate(&args))]
     pub fn program_config_init(ctx: Context<Self>, args: ProgramConfigInitArgs) -> Result<()> {
         let authority = ctx.accounts.authority.key();
         let creator_key = args.creator_key;

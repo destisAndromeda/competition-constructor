@@ -28,7 +28,7 @@ impl ProgramConfig {
             Pubkey::default(),
             CustomError::InvalidAccount,
         );
-        
+
         require_keys_neq!(
             self.creator_key,
             Pubkey::default(),

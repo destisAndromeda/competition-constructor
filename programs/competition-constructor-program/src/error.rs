@@ -20,12 +20,9 @@ pub enum CustomError {
     #[msg("Winner Is Not Determine")]
     WinnerIsNotDetermine,          // 6005
     
-    #[msg("Invalid Creator Key And Treasury")]
-    InvalidCreatorKeyAndTreasury,  //6006
-
     #[msg("Invalid Account")]
-    InvalidAccount,                // 6007
+    InvalidAccount,                // 6006
 
     #[msg("Same Accounts")]
-    SameAccounts,
+    SameAccounts,                  // 6007
 }

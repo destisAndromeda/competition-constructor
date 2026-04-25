@@ -66,7 +66,9 @@ impl<'info> ConstructorCreate<'info> {
             transaction_fee,
             bump,
         });
-        
+
+        ctx.accounts.constructor.invariant()?;
+
         Ok(())
     }
 }
