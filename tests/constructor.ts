@@ -16,7 +16,7 @@ anchor.setProvider(provider);
 const program = anchor.workspace.CompetitionConstructorProgram as Program<CompetitionConstructorProgram>;
 const systemProgram = anchor.web3.SystemProgram.programId;
 
-describe('constructor_create tests', () => {
+describe('constructor_create', () => {
   it('error: should fail with same authority and creatorKey', async () => {
     const same = anchor.web3.Keypair.generate();
     const fee  = 0;
@@ -121,6 +121,11 @@ describe('constructor_create tests', () => {
   });
 });
 
-// describe('constru', () => {
+describe('constructor_update', () => {
+  it('authority update', async () => {
+    let newAuthority = anchor.web3.Keypair.generate();
+    let prevAuthority = await program.accounts.constructor.fetch(state.constructorPda).authority;
 
-// });
+
+  });
+});

@@ -27,7 +27,7 @@ after(async () => {
   }
 });
 
-describe('prgoram_config_init tests', () => {
+describe('prgoram_config_init', () => {
   it('error: should fail with default authority', async () => {
     const defaultKey = PublicKey.default;
 
@@ -76,7 +76,7 @@ describe('prgoram_config_init tests', () => {
     });
   });
 
-  it('error: should fail with equals creatorKey and state.treasury', async () => {
+  it('error: should fail with equals creatorKey and treasury', async () => {
     const same = anchor.web3.Keypair.generate();
 
     await expect(
@@ -132,7 +132,7 @@ describe('prgoram_config_init tests', () => {
     ).to.be.rejectedWith(/already in use/i);
   });
 
-  it('creator_key and state.treasury are not equal', async () => {
+  it('creator_key and treasury are not equal', async () => {
     const configAccount = await program.account.programConfig.fetch(state.programConfigPda);
     expect(
       configAccount.creatorKey.equals(configAccount.treasury)
@@ -140,7 +140,7 @@ describe('prgoram_config_init tests', () => {
   });
 });
 
-describe('program_config_update tests', () => {
+describe('program_config_update', () => {
   it('error: should fail with unauthorized key', async () => {
     const unauthorized = anchor.web3.Keypair.generate();
 
@@ -257,7 +257,7 @@ describe('program_config_update tests', () => {
         .rpc();
   });
 
-  it('error: should fail with previous state.creatorKeyConfig', async () => {
+  it('error: should fail with previous creatorKeyConfig', async () => {
     const prevCreatorKey = (await program.account.programConfig.fetch(state.programConfigPda)).creatorKey;
 
     await expect(
@@ -275,7 +275,7 @@ describe('program_config_update tests', () => {
     });
   });
 
-  it('state.treasury update', async () => {
+  it('treasury update', async () => {
     const prevTreasury = (await program.account.programConfig.fetch(state.programConfigPda)).treasury;
     const newTreasury = anchor.web3.Keypair.generate();
 
@@ -296,7 +296,7 @@ describe('program_config_update tests', () => {
       ).to.be.false;
   });
 
-  it('error: should fail with previous state.treasury', async () => {
+  it('error: should fail with previous treasury', async () => {
     const prevTreasury = (await program.account.programConfig.fetch(state.programConfigPda)).treasury;
 
     await expect(
