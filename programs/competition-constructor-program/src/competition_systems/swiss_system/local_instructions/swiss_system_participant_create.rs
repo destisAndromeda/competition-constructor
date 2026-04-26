@@ -10,8 +10,6 @@ pub struct SwissSystemParticipantCreateArgs {
     pub competition_index: u64,
 
     pub participant: Pubkey,
-
-    pub authority: Pubkey,
 }
 
 #[derive(Accounts)]
@@ -71,11 +69,26 @@ pub struct SwissSystemParticipantCreate<'info> {
 }
 
 impl<'info> SwissSystemParticipantCreate<'info> {
+    fn validate(&self, args: &SwissSystemParticipantCreateArgs) -> Result<()> {
+        let Self {
+            organizer,
+            ..
+        } = self;
+
+        require_keys_neq!(
+            organizer.key(),
+            args.participant,
+            CustomError::InvalidAccount,
+        );
+
+        Ok(())
+    }
+
+    #[access_control(ctx.accounts.validate(&args))]
     pub fn swiss_system_participant_create(
         ctx: Context<Self>,
         args: SwissSystemParticipantCreateArgs,
     ) -> Result<()> {
-        let authority = args.authority;
         let participant = args.participant;
 
         let status = ParticipantStatus::Active {
@@ -86,7 +99,6 @@ impl<'info> SwissSystemParticipantCreate<'info> {
         let bump = ctx.bumps.participant;
 
         ctx.accounts.participant.set_inner(Participant {
-            authority,
             participant,
             points,
             status,

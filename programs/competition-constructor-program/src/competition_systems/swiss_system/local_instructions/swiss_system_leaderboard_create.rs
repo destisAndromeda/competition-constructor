@@ -8,8 +8,6 @@ use crate::competition_systems::swiss_system::local_state::*;
 #[derive(AnchorSerialize, AnchorDeserialize)]
 pub struct SwissSystemLeaderBoardCreateArgs {
     pub competition_index: u64,
-
-    pub authority: Pubkey,
 }
 
 #[derive(Accounts)]
@@ -69,16 +67,13 @@ pub struct SwissSystemLeaderBoardCreate<'info> {
 }
 
 impl<'info> SwissSystemLeaderBoardCreate<'info> {
-
     pub fn swiss_system_leaderboard_create(
         ctx: Context<Self>,
         args: SwissSystemLeaderBoardCreateArgs,
     ) -> Result<()> {
-        let authority = args.authority;
         let bump = ctx.bumps.leaderboard;
 
         ctx.accounts.leaderboard.set_inner(LeaderBoard {
-            authority,
             list: Vec::new(),
             bump,
         });

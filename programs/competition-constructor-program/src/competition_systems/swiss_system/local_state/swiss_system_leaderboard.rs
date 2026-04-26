@@ -5,9 +5,6 @@ pub const LEADER_BOARD_LIMIT: usize = 30;
 #[account]
 #[derive(InitSpace)]
 pub struct LeaderBoard {
-    /// Authority that can reward points
-    pub authority: Pubkey,
-
     /// List of participants
     #[max_len(LEADER_BOARD_LIMIT)]
     pub list: Vec<ParticipantData>,

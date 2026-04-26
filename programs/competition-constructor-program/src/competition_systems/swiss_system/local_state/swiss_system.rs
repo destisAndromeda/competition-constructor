@@ -1,6 +1,6 @@
 use anchor_lang::prelude::*;
 
-use state::error::*;
+use crate::error::*;
 
 #[account]
 #[derive(InitSpace)]
@@ -10,6 +10,9 @@ pub struct SwissSystem {
 
     /// Creator key for accounts PDA
     pub creator_key: Pubkey,    
+
+    /// Authority that can award points
+    pub authority: Pubkey,
 
     /// Current stage of the competition
     pub stage: Option<Stage>,
@@ -25,11 +28,23 @@ pub struct SwissSystem {
 }
 
 impl SwissSystem {
-    pub fn invariant(&self) -> Reuslt<()> {
+    pub fn invariant(&self) -> Result<()> {
         require_keys_neq!(
             self.organizer,
             self.creator_key,
-            CustomError::SameAccoutns,
+            CustomError::SameAccounts,
+        );
+
+        require_keys_neq!(
+            self.organizer,
+            self.authority,
+            CustomError::SameAccounts,
+        );
+
+        require_keys_neq!(
+            self.authority,
+            self.creator_key,
+            CustomError::SameAccounts,
         );
 
         Ok(())

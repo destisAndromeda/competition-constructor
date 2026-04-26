@@ -10,6 +10,8 @@ pub struct SwissSystemCreateArgs {
     pub stage_info: StageInfo,
 
     pub creator_key: Pubkey,
+
+    pub authority: Pubkey,
 }
 
 #[derive(Accounts)]
@@ -59,16 +61,18 @@ impl<'info> SwissSystemCreate<'info> {
     pub fn swiss_system_create(ctx: Context<Self>, args: SwissSystemCreateArgs) -> Result<()> {
         let organizer = ctx.accounts.organizer.key();
         let creator_key = args.creator_key.key();
+        let authority = args.authority.key();
 
         let stage = None;
         let stage_info = args.stage_info;
-        
+
         let vault_index = 0;
         let bump = ctx.bumps.swiss_system;
 
         ctx.accounts.swiss_system.set_inner( local_state::SwissSystem {
             organizer,
             creator_key,
+            authority,
             stage,
             stage_info,
             vault_index,
@@ -81,6 +85,8 @@ impl<'info> SwissSystemCreate<'info> {
         constructor.competition_index.checked_add(1).ok_or(
             CustomError::Overflow,
         )?;
+
+        ctx.accounts.swiss_system.invariant()?;
 
         Ok(())
     }

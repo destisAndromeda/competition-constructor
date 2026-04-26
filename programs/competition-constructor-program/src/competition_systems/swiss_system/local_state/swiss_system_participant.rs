@@ -3,9 +3,6 @@ use anchor_lang::prelude::*;
 #[account]
 #[derive(InitSpace)]
 pub struct Participant {
-    /// Authority that can award points
-    pub authority: Pubkey,
-
     /// Address of participant wallet
     pub participant: Pubkey,
 

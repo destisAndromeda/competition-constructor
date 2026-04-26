@@ -1,19 +1,27 @@
 use anchor_lang::prelude::*;
 
 use crate::state::*;
+use crate::error::*;
 use crate::seeds::*;
-use crate::competition_systems::swiss_system::*;
+use crate::competition_systems::swiss_system::local_state::*;
 
 #[derive(AnchorSerialize, AnchorDeserialize)]
-pub struct SwissSystemUpdateStageArgs {
+pub struct SwissSystemUpdateArgs {
     pub competition_index: u64,
+
+    pub account: Pubkey,
 }
 
 #[derive(Accounts)]
-#[instruction(args: SwissSystemUpdateStageArgs)]
-pub struct SwissSystemUpdateStage<'info> {
+#[instruction(args: SwissSystemUpdateArgs)]
+pub struct SwissSystemUpdate<'info> {
+    #[account(mut)]
+    pub organizer: Signer<'info>,
+
     #[account(
         mut,
+        has_one = organizer
+            @ CustomError::Unauthorized,
         seeds = [
             SEED_PREFIX,
             constructor.creator_key.key().as_ref(),
@@ -22,14 +30,14 @@ pub struct SwissSystemUpdateStage<'info> {
         ],
         bump  = swiss_system.bump,
     )]
-    pub swiss_system: Account<'info, local_state::SwissSystem>,
+    pub swiss_system: Account<'info, SwissSystem>,
 
     #[account(
         seeds = [
             SEED_PREFIX,
             program_config.key().as_ref(),
-            SEED_CONSTRUCTOR,
-            program_config.creator_key.key().as_ref(),
+            SEED_PREFIX,
+            program_config.creator_key.as_ref(),
         ],
         bump  = constructor.bump,
     )]
@@ -42,35 +50,33 @@ pub struct SwissSystemUpdateStage<'info> {
         ],
         bump  = program_config.bump,
     )]
-    pub program_config: Account<'info, ProgramConfig>,
+    program_config: Account<'info, ProgramConfig>,
 }
 
-impl<'info> SwissSystemUpdateStage<'info> {
-    pub fn swiss_system_update_stage(
+impl<'info> SwissSystemUpdate<'info> {
+    pub fn swiss_system_authority_update(
         ctx: Context<Self>,
-        _args: SwissSystemUpdateStageArgs,
+        args: SwissSystemUpdateArgs,
     ) -> Result<()> {
-        let stage_info = ctx.accounts.swiss_system.stage_info.clone();
         let swiss_system = &mut ctx.accounts.swiss_system;
-        let current_time = Clock::get()?.unix_timestamp;
 
-        if current_time >= stage_info.withdraw_period {
-            swiss_system.stage = Some(
-                local_state::Stage::RegistrationPeriod {
-                    timestamp: Clock::get()?.unix_timestamp,
-            });
-        } else if current_time >= stage_info.competition_period {
-            swiss_system.stage = Some(
-                local_state::Stage::CompetitionPeriod {
-                    timestamp: Clock::get()?.unix_timestamp,
-            });
-        } else if current_time >= stage_info.registration_period {
-            swiss_system.stage = Some(
-                local_state::Stage::WithdrawPeriod {
-                    timestamp: Clock::get()?.unix_timestamp,
-            });
-        }
+        swiss_system.authority = args.account; 
+
+        swiss_system.invariant()?;
 
         Ok(())
     }
-}
+
+    pub fn swiss_system_creator_key_update(
+        ctx: Context<Self>,
+        args: SwissSystemUpdateArgs,
+    ) -> Result<()> {
+        let swiss_system = &mut ctx.accounts.swiss_system;
+
+        swiss_system.creator_key = args.account;
+
+        swiss_system.invariant()?;
+
+        Ok(())
+    }
+} 

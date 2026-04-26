@@ -24,8 +24,6 @@ pub struct SwissSystemPointsAward<'info> {
 
     #[account(
         mut,
-        has_one = authority
-            @ CustomError::Unauthorized,
         seeds = [
             SEED_PREFIX,
             swiss_system.creator_key.as_ref(),
@@ -38,8 +36,6 @@ pub struct SwissSystemPointsAward<'info> {
 
     #[account(
         mut,
-        has_one = authority
-            @ CustomError::Unauthorized,
         seeds = [
             SEED_PREFIX,
             swiss_system.creator_key.as_ref(),
@@ -51,6 +47,8 @@ pub struct SwissSystemPointsAward<'info> {
     pub leaderboard: Account<'info, LeaderBoard>,
 
     #[account(
+        has_one = authority
+            @ CustomError::Unauthorized,
         seeds = [
             SEED_PREFIX,
             constructor.creator_key.as_ref(),
@@ -87,7 +85,12 @@ impl<'info> SwissSystemPointsAward<'info> {
         ctx: Context<Self>,
         args: SwissSystemPointsAwardArgs
     ) -> Result<()> {
-        ctx.accounts.participant.points += args.points;
+        // ctx.accounts.participant.points += args.points;
+
+        ctx.accounts.participant.points =
+            ctx.accounts.participant.points.checked_add(args.points).ok_or(
+                CustomError::Overflow,
+            )?;
 
         ctx.accounts.leaderboard.sort_by_points(ParticipantData {
             address: Some(ctx.accounts.participant.key()),

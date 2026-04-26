@@ -87,12 +87,28 @@ pub mod competition_constructor_program {
             swiss_system_create(ctx, args)
     }
 
-    pub fn swiss_system_update_stage(
-        ctx: Context<SwissSystemUpdateStage>,
-        args: SwissSystemUpdateStageArgs,
+    pub fn swiss_system_authority_update(
+        ctx: Context<SwissSystemUpdate>,
+        args: SwissSystemUpdateArgs,
     ) -> Result<()> {
-        SwissSystemUpdateStage::
-            swiss_system_update_stage(ctx, args)
+        SwissSystemUpdate::
+            swiss_system_authority_update(ctx, args)
+    }
+    
+    pub fn swiss_system_creator_key_update(
+        ctx: Context<SwissSystemUpdate>,
+        args: SwissSystemUpdateArgs,
+    ) -> Result<()> {
+        SwissSystemUpdate::
+            swiss_system_creator_key_update(ctx, args)
+    }
+
+    pub fn swiss_system_stage_update(
+        ctx: Context<SwissSystemStageUpdate>,
+        args: SwissSystemStageUpdateArgs,
+    ) -> Result<()> {
+        SwissSystemStageUpdate::
+            swiss_system_stage_update(ctx, args)
     }
 
     pub fn swiss_system_vault_create(
