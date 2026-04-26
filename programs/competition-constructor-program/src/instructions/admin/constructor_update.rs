@@ -11,28 +11,30 @@ pub struct ConstructorTransactionFeeUpdateArgs {
 
 #[derive(AnchorSerialize, AnchorDeserialize)]
 pub struct ConstructorUpdateArgs {
-    pub account: Pubkey,
+    pub creator_key: Pubkey,
 }
 
 #[derive(Accounts)]
 pub struct ConstructorUpdate<'info> {
     #[account(mut)]
-    pub creator_key: Signer<'info>,
+    pub authority: Signer<'info>,
 
     #[account(
         mut,
+        has_one = authority
+            @ CustomError::Unauthorized,
         seeds = [
             SEED_PREFIX,
             program_config.key().as_ref(),
             SEED_CONSTRUCTOR,
-            creator_key.key().as_ref(),
+            program_config.creator_key.as_ref(),
         ],
         bump  = constructor.bump,
     )]
     pub constructor: Account<'info, Constructor>,
 
     #[account(
-        has_one = creator_key
+        constraint = authority.key() != program_config.creator_key
             @ CustomError::Unauthorized,
         seeds = [
             SEED_PREFIX,
@@ -46,42 +48,23 @@ pub struct ConstructorUpdate<'info> {
 impl<'info> ConstructorUpdate<'info> {
     fn validate(&self, args: &ConstructorUpdateArgs) -> Result<()> {
         let Self {
-            creator_key,
+            authority,
             constructor,
+            program_config,
             ..
         } = self;
-        
+
         require_keys_neq!(
-            creator_key.key(),
-            args.account,
+            authority.key(),
+            args.creator_key,
             CustomError::InvalidAccount,
         );
 
         require_keys_neq!(
-            constructor.authority,
-            args.account,
+            program_config.creator_key,
+            args.creator_key,
             CustomError::InvalidAccount,
         );
-
-        require_keys_neq!(
-            constructor.creator_key,
-            args.account,
-            CustomError::InvalidAccount
-        );
-
-        Ok(())
-    }
-
-    #[access_control(ctx.accounts.validate(&args))]
-    pub fn constructor_authority_update(
-        ctx: Context<Self>,
-        args: ConstructorUpdateArgs,
-    ) -> Result<()> {
-        let constructor = &mut ctx.accounts.constructor;
-        
-        constructor.authority = args.account;
-
-        constructor.invariant()?;
 
         Ok(())
     }
@@ -93,7 +76,7 @@ impl<'info> ConstructorUpdate<'info> {
     ) -> Result<()> {
         let constructor = &mut ctx.accounts.constructor;
 
-        constructor.creator_key = args.account;
+        constructor.creator_key = args.creator_key;
 
         constructor.invariant()?;
 

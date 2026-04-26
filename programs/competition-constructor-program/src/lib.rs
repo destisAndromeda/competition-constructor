@@ -56,10 +56,10 @@ pub mod competition_constructor_program {
     }
 
     pub fn constructor_authority_update(
-        ctx: Context<ConstructorUpdate>,
-        args: ConstructorUpdateArgs,
+        ctx: Context<ConstructorAuthorityUpdate>,
+        args: ConstructorAuthorityUpdateArgs,
     ) -> Result<()> {
-        ConstructorUpdate::
+        ConstructorAuthorityUpdate::
             constructor_authority_update(ctx, args)
     }
 
