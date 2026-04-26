@@ -76,14 +76,12 @@ impl<'info> SwissSystemVaultCreate<'info> {
         args: SwissSystemVaultCreateArgs,
     ) -> Result<()> {
         // Init Vault account
-        let organizer = ctx.accounts.organizer.key();
         let winner = None;
         
         let place = ctx.accounts.swiss_system.vault_index;
         let bump = ctx.bumps.vault;
 
         ctx.accounts.vault.set_inner(Vault {
-            organizer,
             winner,
             place,
             bump,

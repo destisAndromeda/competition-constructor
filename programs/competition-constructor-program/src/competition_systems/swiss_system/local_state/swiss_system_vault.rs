@@ -3,9 +3,6 @@ use anchor_lang::prelude::*;
 #[account]
 #[derive(InitSpace)]
 pub struct Vault {
-    /// Organizer of event
-    pub organizer: Pubkey,
-
     /// Winner address in the leaderboard
     pub winner: Option<Pubkey>,
 

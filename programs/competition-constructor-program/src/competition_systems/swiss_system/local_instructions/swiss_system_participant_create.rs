@@ -16,11 +16,11 @@ pub struct SwissSystemParticipantCreateArgs {
 #[instruction(args: SwissSystemParticipantCreateArgs)]
 pub struct SwissSystemParticipantCreate<'info> {
     #[account(mut)]
-    pub organizer: Signer<'info>,
+    pub authority: Signer<'info>,
 
     #[account(
         init,
-        payer = organizer,
+        payer = authority,
         space = 8 + Participant::INIT_SPACE,
         seeds = [
             SEED_PREFIX,
@@ -33,7 +33,7 @@ pub struct SwissSystemParticipantCreate<'info> {
     pub participant: Account<'info, Participant>,
 
     #[account(
-        has_one = organizer
+        has_one = authority
             @ CustomError::Unauthorized,
         seeds = [
             SEED_PREFIX,
@@ -71,12 +71,12 @@ pub struct SwissSystemParticipantCreate<'info> {
 impl<'info> SwissSystemParticipantCreate<'info> {
     fn validate(&self, args: &SwissSystemParticipantCreateArgs) -> Result<()> {
         let Self {
-            organizer,
+            authority,
             ..
         } = self;
 
         require_keys_neq!(
-            organizer.key(),
+            authority.key(),
             args.participant,
             CustomError::InvalidAccount,
         );

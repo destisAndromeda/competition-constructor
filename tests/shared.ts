@@ -6,6 +6,7 @@ import { CompetitionConstructorProgram } from '../target/types/competition_const
 const SEED_PREFIX = 'competition_constructor';
 const SEED_PROGRAM_CONFIG = 'program_config';
 const SEED_CONSTRUCTOR = 'constructor';
+const SEED_COMPETITION = 'competition';
 
 let provider = anchor.AnchorProvider.env();
 anchor.setProvider(provider);
@@ -34,6 +35,35 @@ let [constructorPda] = PublicKey.findProgramAddressSync(
 
 let authorityConstructor = anchor.web3.Keypair.generate();
 
+let competitionIndex = 0;
+
+let competitionIndexBuffer = Buffer.alloc(8);
+competitionIndexBuffer.writeBigUint64LE(BigInt(competitionIndex));
+
+let [swissSystemPda] = PublicKey.findProgramAddressSync(
+  [
+    Buffer.from(SEED_PREFIX),
+    creatorKeyConstructor.publicKey.toBuffer(),
+    Buffer.from(SEED_COMPETITION),
+    competitionIndexBuffer,
+  ],
+  program.programId,
+);
+
+let organizerSwissSystem = anchor.web3.Keypair.generate();
+let creatorKeySwissSystem = anchor.web3.Keypair.generate();
+let authoritySwissSystem = anchor.web3.Keypair.generate();
+
+
+const now = Math.floor(Date.now() / 1000);
+const OneDay = 24 * 60 * 60;
+
+let stageInfo = {
+  registrationPeriod: new anchor.BN(now + OneDay),
+  competitionPeriod: new anchor.BN(now + (OneDay * 2)),
+  withdrawPeriod: new anchor.BN(now + (OneDay * 3)),
+};
+
 export const state: {
   programConfigPda: PublicKey;
   creatorKeyConfig: Keypair;
@@ -42,6 +72,17 @@ export const state: {
   constructorPda: PublicKey,
   creatorKeyConstructor: Keypair,
   authorityConstructor: Keypair,
+
+  swissSystemPda: PublicKey,
+  competitionIndex: number,
+  organizerSwissSystem: Keypair,
+  creatorKeySwissSystem: Keypair,
+  authoritySwissSystem: Keypair,
+  stageInfo: {
+    registrationPeriod: anchor.BN,
+    competitionPeriod: anchor.BN,
+    withdrawPeriod: anchor.BN,
+  },
 } = {
   programConfigPda: programConfigPda,
   creatorKeyConfig: creatorKeyConfig,
@@ -50,4 +91,11 @@ export const state: {
   constructorPda: constructorPda,
   creatorKeyConstructor: creatorKeyConstructor,
   authorityConstructor: authorityConstructor,
+
+  swissSystemPda: swissSystemPda,
+  competitionIndex: competitionIndex,
+  organizerSwissSystem: organizerSwissSystem,
+  creatorKeySwissSystem: creatorKeySwissSystem,
+  authoritySwissSystem: authoritySwissSystem,
+  stageInfo: stageInfo,
 };

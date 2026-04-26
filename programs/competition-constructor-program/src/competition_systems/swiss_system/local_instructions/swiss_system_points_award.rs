@@ -85,8 +85,6 @@ impl<'info> SwissSystemPointsAward<'info> {
         ctx: Context<Self>,
         args: SwissSystemPointsAwardArgs
     ) -> Result<()> {
-        // ctx.accounts.participant.points += args.points;
-
         ctx.accounts.participant.points =
             ctx.accounts.participant.points.checked_add(args.points).ok_or(
                 CustomError::Overflow,

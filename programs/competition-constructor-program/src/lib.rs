@@ -94,7 +94,7 @@ pub mod competition_constructor_program {
         SwissSystemUpdate::
             swiss_system_authority_update(ctx, args)
     }
-    
+
     pub fn swiss_system_creator_key_update(
         ctx: Context<SwissSystemUpdate>,
         args: SwissSystemUpdateArgs,
