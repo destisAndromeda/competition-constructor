@@ -77,12 +77,14 @@ impl<'info> SwissSystemVaultCreate<'info> {
     ) -> Result<()> {
         // Init Vault account
         let winner = None;
+        let asset  = None;
         
         let place = ctx.accounts.swiss_system.vault_index;
         let bump = ctx.bumps.vault;
 
         ctx.accounts.vault.set_inner( local_state::Vault {
             winner,
+            asset,
             place,
             bump,
         });
