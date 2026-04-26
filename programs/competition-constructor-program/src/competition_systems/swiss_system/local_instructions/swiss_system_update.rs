@@ -3,7 +3,7 @@ use anchor_lang::prelude::*;
 use crate::state::*;
 use crate::error::*;
 use crate::seeds::*;
-use crate::competition_systems::swiss_system::local_state::*;
+use crate::competition_systems::swiss_system::*;
 
 #[derive(AnchorSerialize, AnchorDeserialize)]
 pub struct SwissSystemUpdateArgs {
@@ -30,13 +30,13 @@ pub struct SwissSystemUpdate<'info> {
         ],
         bump  = swiss_system.bump,
     )]
-    pub swiss_system: Account<'info, SwissSystem>,
+    pub swiss_system: Account<'info, local_state::SwissSystem>,
 
     #[account(
         seeds = [
             SEED_PREFIX,
             program_config.key().as_ref(),
-            SEED_PREFIX,
+            SEED_CONSTRUCTOR,
             program_config.creator_key.as_ref(),
         ],
         bump  = constructor.bump,

@@ -6,7 +6,10 @@ pub struct Vault {
     /// Winner address in the leaderboard
     pub winner: Option<Pubkey>,
 
-    /// Place that winner gots
+    /// If None - SOL, else token mint
+    pub asset: Option<Pubkey>,
+
+    /// Place that winner gets
     pub place: u64,
 
     /// Bump for Vault PDA seeds

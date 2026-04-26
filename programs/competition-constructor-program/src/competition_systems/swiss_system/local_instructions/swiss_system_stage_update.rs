@@ -12,6 +12,9 @@ pub struct SwissSystemStageUpdateArgs {
 #[derive(Accounts)]
 #[instruction(args: SwissSystemStageUpdateArgs)]
 pub struct SwissSystemStageUpdate<'info> {
+    #[account(mut)]
+    pub caller: Signer<'info>,
+
     #[account(
         mut,
         seeds = [
@@ -56,20 +59,20 @@ impl<'info> SwissSystemStageUpdate<'info> {
 
         if current_time >= stage_info.withdraw_period {
             swiss_system.stage = Some(
-                local_state::Stage::RegistrationPeriod {
-                    timestamp: Clock::get()?.unix_timestamp,
+                local_state::Stage::WithdrawPeriod {
+                    timestamp: current_time,
             });
         } else if current_time >= stage_info.competition_period {
             swiss_system.stage = Some(
                 local_state::Stage::CompetitionPeriod {
-                    timestamp: Clock::get()?.unix_timestamp,
+                    timestamp: current_time,
             });
         } else if current_time >= stage_info.registration_period {
             swiss_system.stage = Some(
-                local_state::Stage::WithdrawPeriod {
-                    timestamp: Clock::get()?.unix_timestamp,
+                local_state::Stage::RegistrationPeriod {
+                    timestamp: current_time,
             });
-        }
+        } 
 
         Ok(())
     }

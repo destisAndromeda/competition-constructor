@@ -4,7 +4,7 @@ use anchor_lang::system_program;
 use crate::state::*;
 use crate::seeds::*;
 use crate::error::*;
-use crate::competition_systems::swiss_system::local_state::*;
+use crate::competition_systems::swiss_system::*;
 
 #[derive(AnchorSerialize, AnchorDeserialize)]
 pub struct SwissSystemPrizeWithdrawArgs {
@@ -25,7 +25,7 @@ pub struct SwissSystemPrizeWithdraw<'info> {
         ],
         bump  = swiss_system.bump,
     )]
-    pub vault: Account<'info, Vault>,
+    pub vault: Account<'info, local_state::Vault>,
 
     #[account(
         seeds = [
@@ -36,7 +36,7 @@ pub struct SwissSystemPrizeWithdraw<'info> {
         ],
         bump  = swiss_system.bump,
     )]
-    pub swiss_system: Account<'info, SwissSystem>,
+    pub swiss_system: Account<'info, local_state::SwissSystem>,
 
     #[account(
         seeds = [

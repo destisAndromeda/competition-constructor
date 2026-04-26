@@ -3,7 +3,7 @@ use anchor_lang::prelude::*;
 use crate::state::*;
 use crate::seeds::*;
 use crate::error::*;
-use crate::competition_systems::swiss_system::local_state::*;
+use crate::competition_systems::swiss_system::*;
 
 #[derive(AnchorSerialize, AnchorDeserialize)]
 pub struct SwissSystemPointsAwardArgs {
@@ -32,7 +32,7 @@ pub struct SwissSystemPointsAward<'info> {
         ],
         bump  = participant.bump,
     )]
-    pub participant: Account<'info, Participant>,
+    pub participant: Account<'info, local_state::Participant>,
 
     #[account(
         mut,
@@ -44,7 +44,7 @@ pub struct SwissSystemPointsAward<'info> {
         ],
         bump  = leaderboard.bump,
     )]
-    pub leaderboard: Account<'info, LeaderBoard>,
+    pub leaderboard: Account<'info, local_state::LeaderBoard>,
 
     #[account(
         has_one = authority
@@ -57,7 +57,7 @@ pub struct SwissSystemPointsAward<'info> {
         ],
         bump  = swiss_system.bump,
     )]
-    pub swiss_system: Account<'info, SwissSystem>,
+    pub swiss_system: Account<'info, local_state::SwissSystem>,
 
     #[account(
         seeds = [
@@ -90,7 +90,7 @@ impl<'info> SwissSystemPointsAward<'info> {
                 CustomError::Overflow,
             )?;
 
-        ctx.accounts.leaderboard.sort_by_points(ParticipantData {
+        ctx.accounts.leaderboard.sort_by_points( local_state::ParticipantData {
             address: Some(ctx.accounts.participant.key()),
             points: ctx.accounts.participant.points,
         });

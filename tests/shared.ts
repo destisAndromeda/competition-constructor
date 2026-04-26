@@ -7,6 +7,7 @@ const SEED_PREFIX = 'competition_constructor';
 const SEED_PROGRAM_CONFIG = 'program_config';
 const SEED_CONSTRUCTOR = 'constructor';
 const SEED_COMPETITION = 'competition';
+const SEED_VAULT = 'vault';
 
 let provider = anchor.AnchorProvider.env();
 anchor.setProvider(provider);
@@ -56,13 +57,27 @@ let authoritySwissSystem = anchor.web3.Keypair.generate();
 
 
 const now = Math.floor(Date.now() / 1000);
-const OneDay = 24 * 60 * 60;
 
 let stageInfo = {
-  registrationPeriod: new anchor.BN(now + OneDay),
-  competitionPeriod: new anchor.BN(now + (OneDay * 2)),
-  withdrawPeriod: new anchor.BN(now + (OneDay * 3)),
+  registrationPeriod: new anchor.BN(now - 10),
+  competitionPeriod: new anchor.BN(now + 15),
+  withdrawPeriod: new anchor.BN(now + 20),
 };
+
+let vaultIndex = 0;
+
+let vaultIndexBuffer = Buffer.alloc(8);
+vaultIndexBuffer.writeBigUint64LE(BigInt(vaultIndex));
+
+let [vaultPda] = PublicKey.findProgramAddressSync(
+  [
+    Buffer.from(SEED_PREFIX),
+    creatorKeySwissSystem.publicKey.toBuffer(),
+    Buffer.from(SEED_VAULT),
+    vaultIndexBuffer,
+  ],
+  program.programId,
+);
 
 export const state: {
   programConfigPda: PublicKey;
@@ -83,6 +98,9 @@ export const state: {
     competitionPeriod: anchor.BN,
     withdrawPeriod: anchor.BN,
   },
+
+  vaultPda: PublicKey,
+  vaultIndex: number,
 } = {
   programConfigPda: programConfigPda,
   creatorKeyConfig: creatorKeyConfig,
@@ -98,4 +116,7 @@ export const state: {
   creatorKeySwissSystem: creatorKeySwissSystem,
   authoritySwissSystem: authoritySwissSystem,
   stageInfo: stageInfo,
+
+  vaultPda: vaultPda,
+  vaultIndex: vaultIndex,
 };

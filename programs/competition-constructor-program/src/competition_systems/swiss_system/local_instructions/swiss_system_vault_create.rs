@@ -4,7 +4,7 @@ use anchor_lang::system_program;
 use crate::state::*;
 use crate::seeds::*;
 use crate::error::*;
-use crate::competition_systems::swiss_system::local_state::*;
+use crate::competition_systems::swiss_system::*;
 
 #[derive(AnchorSerialize, AnchorDeserialize)]
 pub struct SwissSystemVaultCreateArgs {
@@ -22,7 +22,7 @@ pub struct SwissSystemVaultCreate<'info> {
     #[account(
         init,
         payer = organizer,
-        space = 8 + Vault::INIT_SPACE,
+        space = 8 + local_state::Vault::INIT_SPACE,
         seeds = [
             SEED_PREFIX,
             swiss_system.creator_key.key().as_ref(),
@@ -31,7 +31,7 @@ pub struct SwissSystemVaultCreate<'info> {
         ],
         bump,
     )]
-    pub vault: Account<'info, Vault>,
+    pub vault: Account<'info, local_state::Vault>,
 
     #[account(
         mut,
@@ -45,7 +45,7 @@ pub struct SwissSystemVaultCreate<'info> {
         ],
         bump  = swiss_system.bump,
     )]
-    pub swiss_system: Account<'info, SwissSystem>,
+    pub swiss_system: Account<'info, local_state::SwissSystem>,
 
     #[account(
         seeds = [
@@ -81,7 +81,7 @@ impl<'info> SwissSystemVaultCreate<'info> {
         let place = ctx.accounts.swiss_system.vault_index;
         let bump = ctx.bumps.vault;
 
-        ctx.accounts.vault.set_inner(Vault {
+        ctx.accounts.vault.set_inner( local_state::Vault {
             winner,
             place,
             bump,
