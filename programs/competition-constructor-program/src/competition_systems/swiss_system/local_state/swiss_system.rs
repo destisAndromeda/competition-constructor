@@ -1,5 +1,7 @@
 use anchor_lang::prelude::*;
 
+// use state::error::*;
+
 #[account]
 #[derive(InitSpace)]
 pub struct SwissSystem {
@@ -21,6 +23,18 @@ pub struct SwissSystem {
     /// Bump for SwissSystem account PDA seeds
     pub bump: u8,
 }
+
+// impl SwissSystem {
+//     pub fn invariant(&self) -> Reuslt<()> {
+//         require_keys_neq!(
+//             self.organizer,
+//             self.creator_key,
+//             CustomError::SameAccoutns,
+//         );
+
+//         Ok(())
+//     }
+// }
 
 #[derive(
     AnchorSerialize,

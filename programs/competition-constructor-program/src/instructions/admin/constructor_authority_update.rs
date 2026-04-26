@@ -53,7 +53,7 @@ impl<'info> ConstructorAuthorityUpdate<'info> {
 
         Ok(())
     }
-    
+
     #[access_control(ctx.accounts.validate(&args))]
     pub fn constructor_authority_update(
         ctx: Context<Self>,
