@@ -24,6 +24,7 @@ yarn run ts-mocha -p ./tsconfig.json -t 1000000 \
 ./tests/swiss_system_vault_create.ts            \
 ./tests/swiss_system_vault_spl_create.ts        \
 ./tests/swiss_system_leaderboard_create.ts      \
+./tests/swiss_system_participant_create.ts
 """
 test-slow = """                                 \
 yarn run ts-mocha -p ./tsconfig.json -t 1000000 \

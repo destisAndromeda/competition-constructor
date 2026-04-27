@@ -174,7 +174,7 @@ describe('swiss_system_update', () => {
 
   it('update authority', async () => {
     let newAuthority = anchor.web3.Keypair.generate();
-    let prevAccount = await program.account.constructor.fetch(state.constructorPda);
+    let prevAccount = await program.account.swissSystem.fetch(state.swissSystemPda);
     let prevAuthority = prevAccount.authority;
 
     await program.methods
