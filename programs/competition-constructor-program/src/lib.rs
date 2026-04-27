@@ -119,6 +119,14 @@ pub mod competition_constructor_program {
             swiss_system_vault_create(ctx, args)
     }
 
+    pub fn swiss_system_vault_spl_create(
+        ctx: Context<SwissSystemVaultSplCreate>,
+        args: SwissSystemVaultSplCreateArgs
+    ) -> Result<()> {
+        SwissSystemVaultSplCreate::
+            swiss_system_vault_spl_create(ctx, args)
+    }
+
     pub fn swiss_system_prize_withdraw(
         ctx: Context<SwissSystemPrizeWithdraw>,
         args: SwissSystemPrizeWithdrawArgs,

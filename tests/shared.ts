@@ -8,6 +8,8 @@ const SEED_PROGRAM_CONFIG = 'program_config';
 const SEED_CONSTRUCTOR = 'constructor';
 const SEED_COMPETITION = 'competition';
 const SEED_VAULT = 'vault';
+const SEED_LEADER_BOARD = 'leaderboard';
+const SEED_PARTICIPANT = 'participant';
 
 let provider = anchor.AnchorProvider.env();
 anchor.setProvider(provider);
@@ -79,6 +81,39 @@ let [vaultPda] = PublicKey.findProgramAddressSync(
   program.programId,
 );
 
+let [leaderboardPda] = PublicKey.findProgramAddressSync(
+  [
+    Buffer.from(SEED_PREFIX),
+    creatorKeySwissSystem.publicKey.toBuffer(),
+    Buffer.from(SEED_LEADER_BOARD),
+    organizerSwissSystem.publicKey.toBuffer(),
+  ],
+  program.programId,
+);
+
+let participantOne = anchor.web3.Keypair.generate();
+// let participantTwo = anchor.web3.Keypair.generate();
+
+let [participantOnePda] = PublicKey.findProgramAddressSync(
+  [
+    Buffer.from(SEED_PREFIX),
+    creatorKeySwissSystem.publicKey.toBuffer(),
+    Buffer.from(SEED_PARTICIPANT),
+    participantOne.publicKey.toBuffer(),
+  ],
+  program.programId,
+);
+
+// let [participantTwoPda] = PublicKey.findProgramAddressSync(
+//   [
+//     Buffer.from(SEED_PREFIX),
+//     creatorKeySwissSystem.publicKey.toBuffer(),
+//     Buffer.from(SEED_PARTICIPANT),
+//     participantTwo.publicKey.toBuffer(),
+//   ],
+//   program.programId,
+// );
+
 export const state: {
   programConfigPda: PublicKey;
   creatorKeyConfig: Keypair;
@@ -101,6 +136,11 @@ export const state: {
 
   vaultPda: PublicKey,
   vaultIndex: number,
+
+  leaderboardPda: PublicKey,
+
+  participantOne: Keypair,
+  participantOnePda: PublicKey,
 } = {
   programConfigPda: programConfigPda,
   creatorKeyConfig: creatorKeyConfig,
@@ -119,4 +159,9 @@ export const state: {
 
   vaultPda: vaultPda,
   vaultIndex: vaultIndex,
+
+  leaderboardPda: leaderboardPda,
+
+  participantOne: participantOne,
+  participantOnePda: participantOnePda,
 };

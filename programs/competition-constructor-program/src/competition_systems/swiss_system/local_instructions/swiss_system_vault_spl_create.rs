@@ -42,7 +42,7 @@ pub struct SwissSystemVaultSplCreate<'info> {
         ],
         bump,
     )]
-    pub vault: Account<'info, local_state::Vault>,
+    pub vault: Box<Account<'info, local_state::Vault>>,
 
     #[account(
         mut,
@@ -54,7 +54,7 @@ pub struct SwissSystemVaultSplCreate<'info> {
         ],
         bump = swiss_system.bump,
     )]
-    pub swiss_system: Account<'info, local_state::SwissSystem>,
+    pub swiss_system: Box<Account<'info, local_state::SwissSystem>>,
 
     #[account(
         seeds = [
@@ -65,7 +65,7 @@ pub struct SwissSystemVaultSplCreate<'info> {
         ],
         bump  = constructor.bump,
     )]
-    pub constructor: Account<'info, Constructor>,
+    pub constructor: Box<Account<'info, Constructor>>,
 
     #[account(
         seeds = [
@@ -76,7 +76,7 @@ pub struct SwissSystemVaultSplCreate<'info> {
     )]
     pub program_config: Account<'info, ProgramConfig>,
 
-    pub mint: InterfaceAccount<'info, Mint>,
+    pub mint: Box<InterfaceAccount<'info, Mint>>,
 
     #[account(
         mut,
@@ -84,7 +84,7 @@ pub struct SwissSystemVaultSplCreate<'info> {
         associated_token::authority = organizer,
         associated_token::token_program = token_program,
     )]
-    pub organizer_ata: InterfaceAccount<'info, TokenAccount>,
+    pub organizer_ata: Box<InterfaceAccount<'info, TokenAccount>>,
 
     #[account(
         init_if_needed, // UNSAFE
@@ -93,7 +93,7 @@ pub struct SwissSystemVaultSplCreate<'info> {
         associated_token::authority = vault,
         associated_token::token_program = token_program,
     )]
-    pub vault_ata: InterfaceAccount<'info, TokenAccount>,
+    pub vault_ata: Box<InterfaceAccount<'info, TokenAccount>>,
 
     pub token_program: Interface<'info, TokenInterface>,
     pub associated_token_program: Program<'info, AssociatedToken>,

@@ -10,7 +10,7 @@ const { expect } = chai;
 
 chai.use(chaiAsPromised);
 
-const VAULT_SIZE = 1 + 8 + 33;
+const VAULT_SIZE = 1 + 8 + 8 + 33 + 33;
 
 let provider = anchor.AnchorProvider.env();
 anchor.setProvider(provider);
@@ -42,7 +42,7 @@ describe('swiss_system_vault_create', () => {
 
     const vaultBalance = await provider.connection.getBalance(state.vaultPda);
     const rentExempt = await provider.connection.getMinimumBalanceForRentExemption(
-      8 + VAULT_SIZE,
+      VAULT_SIZE,
     );
 
     expect(vaultBalance).to.equal(prize.toNumber() + rentExempt);
