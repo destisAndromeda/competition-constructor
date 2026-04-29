@@ -11,7 +11,9 @@ pub struct SwissSystemPointsAwardArgs {
 
     pub organizer: Pubkey,
 
-    pub participant_index: u64,
+    // pub participant_index: u64,
+
+    pub particiapnt: Pubkey,
 
     pub points: u64,
 }
@@ -22,17 +24,30 @@ pub struct SwissSystemPointsAward<'info> {
     #[account(mut)]
     pub authority: Signer<'info>,
 
+    // #[account(
+    //     mut,
+    //     seeds = [
+    //         SEED_PREFIX,
+    //         swiss_system.creator_key.as_ref(),
+    //         SEED_PARTICIPANT,
+    //         &args.participant_index.to_le_bytes(),
+    //     ],
+    //     bump  = participant.bump,
+    // )]
+    // pub participant: Account<'info, local_state::Participant>,
+
     #[account(
         mut,
         seeds = [
             SEED_PREFIX,
             swiss_system.creator_key.as_ref(),
             SEED_PARTICIPANT,
-            &args.participant_index.to_le_bytes(),
+            args.particiapnt.as_ref(),
         ],
         bump  = participant.bump,
     )]
     pub participant: Account<'info, local_state::Participant>,
+
 
     #[account(
         mut,
