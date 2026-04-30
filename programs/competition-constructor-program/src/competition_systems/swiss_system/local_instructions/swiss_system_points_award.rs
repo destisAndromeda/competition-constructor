@@ -99,8 +99,8 @@ impl<'info> SwissSystemPointsAward<'info> {
             )?;
 
         ctx.accounts.leaderboard.sort_by_points( local_state::ParticipantData {
-            address: Some(args.participant),
-            points: ctx.accounts.participant.points,
+            address: args.participant,
+            points:  ctx.accounts.participant.points,
         });
 
         Ok(())
