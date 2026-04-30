@@ -25,4 +25,10 @@ pub enum CustomError {
 
     #[msg("Same Accounts")]
     SameAccounts,                  // 6007
+
+    #[msg("Incorrect Value")]
+    IncorrectValue,                // 6008
+
+    #[msg("InvalidStage")]
+    InvalidStage,                  // 6009
 }

@@ -9,12 +9,16 @@ use crate::competition_systems::swiss_system::*;
 #[derive(AnchorSerialize, AnchorDeserialize)]
 pub struct SwissSystemPrizeWithdrawArgs {
     pub competition_index: u64,
+
     pub vault_index: u64,
 }
 
 #[derive(Accounts)]
 #[instruction(args: SwissSystemPrizeWithdrawArgs)]
 pub struct SwissSystemPrizeWithdraw<'info> {
+    #[account(mut)]
+    pub caller: Signer<'info>,
+    
     #[account(
         mut,
         seeds = [
@@ -23,7 +27,7 @@ pub struct SwissSystemPrizeWithdraw<'info> {
             SEED_VAULT,
             &args.vault_index.to_le_bytes(),
         ],
-        bump  = swiss_system.bump,
+        bump  = vault.bump,
     )]
     pub vault: Account<'info, local_state::Vault>,
 

@@ -11,9 +11,7 @@ pub struct SwissSystemPointsAwardArgs {
 
     pub organizer: Pubkey,
 
-    // pub participant_index: u64,
-
-    pub particiapnt: Pubkey,
+    pub participant: Pubkey,
 
     pub points: u64,
 }
@@ -24,30 +22,20 @@ pub struct SwissSystemPointsAward<'info> {
     #[account(mut)]
     pub authority: Signer<'info>,
 
-    // #[account(
-    //     mut,
-    //     seeds = [
-    //         SEED_PREFIX,
-    //         swiss_system.creator_key.as_ref(),
-    //         SEED_PARTICIPANT,
-    //         &args.participant_index.to_le_bytes(),
-    //     ],
-    //     bump  = participant.bump,
-    // )]
-    // pub participant: Account<'info, local_state::Participant>,
-
     #[account(
         mut,
+        constraint =
+            args.participant == participant.participant
+            @ CustomError::InvalidAccount,
         seeds = [
             SEED_PREFIX,
             swiss_system.creator_key.as_ref(),
             SEED_PARTICIPANT,
-            args.particiapnt.as_ref(),
+            args.participant.as_ref(),
         ],
         bump  = participant.bump,
     )]
     pub participant: Account<'info, local_state::Participant>,
-
 
     #[account(
         mut,
@@ -100,13 +88,18 @@ impl<'info> SwissSystemPointsAward<'info> {
         ctx: Context<Self>,
         args: SwissSystemPointsAwardArgs
     ) -> Result<()> {
+        require!(
+            args.points != 0,
+            CustomError::IncorrectValue,
+        );
+
         ctx.accounts.participant.points =
             ctx.accounts.participant.points.checked_add(args.points).ok_or(
                 CustomError::Overflow,
             )?;
 
         ctx.accounts.leaderboard.sort_by_points( local_state::ParticipantData {
-            address: Some(ctx.accounts.participant.key()),
+            address: Some(args.participant),
             points: ctx.accounts.participant.points,
         });
 

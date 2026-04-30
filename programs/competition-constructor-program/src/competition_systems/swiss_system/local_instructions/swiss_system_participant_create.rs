@@ -76,6 +76,20 @@ impl<'info> SwissSystemParticipantCreate<'info> {
             ..
         } = self;
 
+        #[cfg(not(feature = "testing"))]
+        {
+            let current = Clock::get()?.unix_timestamp;
+            
+            if let Some(local_state::Stage::RegistrationPeriod { timestamp }) = swiss_system.stage {
+                require!(
+                    current < timestamp,
+                    CustomError::InvalidStage,
+                );
+            } else {
+                return err!(CustomError::InvalidStage);
+            };
+        }
+
         require_keys_neq!(
             args.participant,
             organizer.key(),
