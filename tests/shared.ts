@@ -92,7 +92,9 @@ let [leaderboardPda] = PublicKey.findProgramAddressSync(
 );
 
 let participantOne = anchor.web3.Keypair.generate();
-// let participantTwo = anchor.web3.Keypair.generate();
+let participantTwo = anchor.web3.Keypair.generate();
+let participantThree = anchor.web3.Keypair.generate();
+let participantFour = anchor.web3.Keypair.generate();
 
 let [participantOnePda] = PublicKey.findProgramAddressSync(
   [
@@ -104,15 +106,35 @@ let [participantOnePda] = PublicKey.findProgramAddressSync(
   program.programId,
 );
 
-// let [participantTwoPda] = PublicKey.findProgramAddressSync(
-//   [
-//     Buffer.from(SEED_PREFIX),
-//     creatorKeySwissSystem.publicKey.toBuffer(),
-//     Buffer.from(SEED_PARTICIPANT),
-//     participantTwo.publicKey.toBuffer(),
-//   ],
-//   program.programId,
-// );
+let [participantTwoPda] = PublicKey.findProgramAddressSync(
+  [
+    Buffer.from(SEED_PREFIX),
+    creatorKeySwissSystem.publicKey.toBuffer(),
+    Buffer.from(SEED_PARTICIPANT),
+    participantTwo.publicKey.toBuffer(),
+  ],
+  program.programId,
+);
+
+let [participantThreePda] = PublicKey.findProgramAddressSync(
+  [
+    Buffer.from(SEED_PREFIX),
+    creatorKeySwissSystem.publicKey.toBuffer(),
+    Buffer.from(SEED_PARTICIPANT),
+    participantThree.publicKey.toBuffer(),
+  ],
+  program.programId,
+);
+
+let [participantFourPda] = PublicKey.findProgramAddressSync(
+  [
+    Buffer.from(SEED_PREFIX),
+    creatorKeySwissSystem.publicKey.toBuffer(),
+    Buffer.from(SEED_PARTICIPANT),
+    participantFour.publicKey.toBuffer(),
+  ],
+  program.programId,
+);
 
 export const state: {
   programConfigPda: PublicKey;
@@ -141,27 +163,39 @@ export const state: {
 
   participantOne: Keypair,
   participantOnePda: PublicKey,
+  participantTwo: Keypair,
+  participantTwoPda: PublicKey,
+  participantThree: Keypair,
+  participantThreePda: PublicKey,
+  participantFour: Keypair,
+  participantFourPda: PublicKey,
 } = {
-  programConfigPda: programConfigPda,
-  creatorKeyConfig: creatorKeyConfig,
-  treasury: treasury, 
+  programConfigPda,
+  creatorKeyConfig,
+  treasury, 
 
-  constructorPda: constructorPda,
-  creatorKeyConstructor: creatorKeyConstructor,
-  authorityConstructor: authorityConstructor,
+  constructorPda,
+  creatorKeyConstructor,
+  authorityConstructor,
 
-  swissSystemPda: swissSystemPda,
-  competitionIndex: competitionIndex,
-  organizerSwissSystem: organizerSwissSystem,
-  creatorKeySwissSystem: creatorKeySwissSystem,
-  authoritySwissSystem: authoritySwissSystem,
-  stageInfo: stageInfo,
+  swissSystemPda,
+  competitionIndex,
+  organizerSwissSystem,
+  creatorKeySwissSystem,
+  authoritySwissSystem,
+  stageInfo,
 
-  vaultPda: vaultPda,
-  vaultIndex: vaultIndex,
+  vaultPda,
+  vaultIndex,
 
-  leaderboardPda: leaderboardPda,
+  leaderboardPda,
 
-  participantOne: participantOne,
-  participantOnePda: participantOnePda,
+  participantOne,
+  participantOnePda,
+  participantTwo,
+  participantTwoPda,
+  participantThree,
+  participantThreePda,
+  participantFour,
+  participantFourPda,
 };

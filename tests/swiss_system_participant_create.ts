@@ -189,4 +189,76 @@ describe('swiss_system_particiapnt_create', () => {
       .rpc()
     ).to.be.rejectedWith(/already in use/i);
   });
+
+  it('create second participant', async () => {
+    await program.methods
+      .swissSystemParticipantCreate({
+        competitionIndex: new anchor.BN(state.competitionIndex),
+        participant: state.participantTwo.publicKey,
+      })
+      .accounts({
+        organizer:   state.organizerSwissSystem.publicKey,
+        participant: state.participantTwoPda,
+        swissSystem: state.swissSystemPda,
+        constructor: state.constructorPda,
+        programConfig: state.programConfigPda,
+        systemProgram: systemProgram,
+      })
+      .signers([state.organizerSwissSystem])
+      .rpc();
+    
+      const participantAccount = await program.account.participant.fetch(state.participantTwoPda);
+      
+      expect(participantAccount.participant.equals(state.participantTwo.publicKey)).to.be.true;
+      expect(participantAccount.points.eq(new anchor.BN(0))).to.be.true;
+      expect(participantAccount.status.active).to.not.be.undefined;
+  });
+
+  it('create thrid participant', async () => {
+    await program.methods
+      .swissSystemParticipantCreate({
+        competitionIndex: new anchor.BN(state.competitionIndex),
+        participant: state.participantThree.publicKey,
+      })
+      .accounts({
+        organizer:   state.organizerSwissSystem.publicKey,
+        participant: state.participantThreePda,
+        swissSystem: state.swissSystemPda,
+        constructor: state.constructorPda,
+        programConfig: state.programConfigPda,
+        systemProgram: systemProgram,
+      })
+      .signers([state.organizerSwissSystem])
+      .rpc();
+    
+      const participantAccount = await program.account.participant.fetch(state.participantThreePda);
+      
+      expect(participantAccount.participant.equals(state.participantThree.publicKey)).to.be.true;
+      expect(participantAccount.points.eq(new anchor.BN(0))).to.be.true;
+      expect(participantAccount.status.active).to.not.be.undefined;
+  });
+
+  it('create fourth participant', async () => {
+    await program.methods
+      .swissSystemParticipantCreate({
+        competitionIndex: new anchor.BN(state.competitionIndex),
+        participant: state.participantFour.publicKey,
+      })
+      .accounts({
+        organizer:   state.organizerSwissSystem.publicKey,
+        participant: state.participantFourPda,
+        swissSystem: state.swissSystemPda,
+        constructor: state.constructorPda,
+        programConfig: state.programConfigPda,
+        systemProgram: systemProgram,
+      })
+      .signers([state.organizerSwissSystem])
+      .rpc();
+
+      const participantAccount = await program.account.participant.fetch(state.participantFourPda);
+      
+      expect(participantAccount.participant.equals(state.participantFour.publicKey)).to.be.true;
+      expect(participantAccount.points.eq(new anchor.BN(0))).to.be.true;
+      expect(participantAccount.status.active).to.not.be.undefined;
+  });
 });
