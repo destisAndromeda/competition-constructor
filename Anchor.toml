@@ -26,6 +26,7 @@ yarn run ts-mocha -p ./tsconfig.json -t 1000000 \
 ./tests/swiss_system_leaderboard_create.ts      \
 ./tests/swiss_system_participant_create.ts      \
 ./tests/swiss_system_points_award.ts            \
+./tests/swiss_system_winner_determine.ts        \
 ./tests/swiss_system_prize_withdraw.ts          \
 """
 test-slow = """                                 \

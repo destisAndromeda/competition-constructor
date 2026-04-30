@@ -61,13 +61,13 @@ impl SwissSystem {
     InitSpace,
 )]
 pub enum Stage {
-    /// The period during which participants can register their accounts
+    /// Start of the period during which participants can register their accounts
     RegistrationPeriod { timestamp: i64 },
     
-    /// The period during which the competition takes place
+    /// Start of the period during which the competition takes place
     CompetitionPeriod  { timestamp: i64 },
     
-    /// The period during which the winner can claim the prize
+    /// Start of the period during which the winner can claim the prize
     WithdrawPeriod     { timestamp: i64 },
 }
 

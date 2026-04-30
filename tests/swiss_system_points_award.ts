@@ -5,6 +5,7 @@ import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import { state } from './shared.ts';
 import { PublicKey } from '@solana/web3.js';
+import { isThawAccountInstruction } from '@solana/spl-token';
 
 const { expect } = chai;
 
@@ -30,6 +31,8 @@ describe('swiss_system_points_award', () => {
       anchor.web3.LAMPORTS_PER_SOL * 1,
     );
     
+    await provider.connection.confirmTransaction(signature);
+
     await expect(
       program.methods
         .swissSystemPointsAward({

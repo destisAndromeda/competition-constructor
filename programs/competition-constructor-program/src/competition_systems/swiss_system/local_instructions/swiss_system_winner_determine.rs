@@ -6,52 +6,44 @@ use crate::error::*;
 use crate::competition_systems::swiss_system::*;
 
 #[derive(AnchorSerialize, AnchorDeserialize)]
-pub struct SwissSystemPointsAwardArgs {
+pub struct SwissSystemWinnerDetermineArgs {
     pub competition_index: u64,
-
+    
     pub organizer: Pubkey,
 
-    pub participant: Pubkey,
-
-    pub points: u64,
+    pub vault_index: u64,
 }
 
 #[derive(Accounts)]
-#[instruction(args: SwissSystemPointsAwardArgs)]
-pub struct SwissSystemPointsAward<'info> {
+#[instruction(args: SwissSystemWinnerDetermineArgs)]
+pub struct SwissSystemWinnerDetermine<'info> {
     #[account(mut)]
-    pub authority: Signer<'info>,
+    pub caller: Signer<'info>,
 
     #[account(
         mut,
-        constraint =
-            args.participant == participant.participant
-            @ CustomError::InvalidAccount,
         seeds = [
             SEED_PREFIX,
             swiss_system.creator_key.as_ref(),
-            SEED_PARTICIPANT,
-            args.participant.as_ref(),
+            SEED_VAULT,
+            &args.vault_index.to_le_bytes(),
         ],
-        bump  = participant.bump,
+        bump  = vault.bump,
     )]
-    pub participant: Account<'info, local_state::Participant>,
+    pub vault: Account<'info, local_state::Vault>,
 
     #[account(
-        mut,
         seeds = [
             SEED_PREFIX,
             swiss_system.creator_key.as_ref(),
             SEED_LEADER_BOARD,
-            args.organizer.as_ref(),
+            args.organizer.key().as_ref(),
         ],
         bump  = leaderboard.bump,
     )]
     pub leaderboard: Account<'info, local_state::LeaderBoard>,
 
     #[account(
-        has_one = authority
-            @ CustomError::Unauthorized,
         seeds = [
             SEED_PREFIX,
             constructor.creator_key.as_ref(),
@@ -83,26 +75,20 @@ pub struct SwissSystemPointsAward<'info> {
     pub program_config: Account<'info, ProgramConfig>,
 }
 
-impl<'info> SwissSystemPointsAward<'info> {
-    fn validate(&self, args: &SwissSystemPointsAwardArgs) -> Result<()> {
+impl<'info> SwissSystemWinnerDetermine<'info> {
+    fn validate(&self) -> Result<()> {
         let Self {
             swiss_system,
             ..
         } = self;
 
-        require!(
-            args.points > 0,
-            CustomError::IncorrectValue,
-        );
-
         #[cfg(not(feature = "testing"))]
         {
             let current = Clock::get()?.unix_timestamp;
 
-            if let Some(local_state::Stage::CompetitionPeriod { timestamp }) = swiss_system.stage {
+            if let Some(local_state::Stage::WithdrawPeriod { timestamp }) = self.swiss_system.stage {
                 require!(
-                    current >= timestamp &&
-                        current < swiss_system.stage_info.withdraw_period,
+                    current >= timestamp,
                     CustomError::InvalidStage,
                 );
             } else {
@@ -113,20 +99,21 @@ impl<'info> SwissSystemPointsAward<'info> {
         Ok(())
     }
 
-    #[access_control(ctx.accounts.validate(&args))]
-    pub fn swiss_system_points_award(
+    #[access_control(ctx.accounts.validate())]
+    pub fn swiss_system_winner_determine(
         ctx: Context<Self>,
-        args: SwissSystemPointsAwardArgs
-    ) -> Result<()> {
-        ctx.accounts.participant.points =
-            ctx.accounts.participant.points.checked_add(args.points).ok_or(
-                CustomError::Overflow,
-            )?;
+        args: SwissSystemWinnerDetermineArgs,
+    ) -> Result <()> {
+        let vault = &mut ctx.accounts.vault;
+        let leaderboard = &mut ctx.accounts.leaderboard;
 
-        ctx.accounts.leaderboard.sort_by_points( local_state::ParticipantData {
-            address: args.participant,
-            points:  ctx.accounts.participant.points,
-        });
+        let place = vault.place as usize;
+
+        if let Some(winner) = leaderboard.list[place] {
+            vault.winner = Some(winner.address);
+        } else {
+            return err!(CustomError::WinnerIsNotDetermine);
+        };
 
         Ok(())
     }

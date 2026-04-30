@@ -158,5 +158,12 @@ pub mod competition_constructor_program {
         SwissSystemPointsAward::
             swiss_system_points_award(ctx, args)
     }
-}
 
+    pub fn swiss_system_winner_determine(
+        ctx: Context<SwissSystemWinnerDetermine>,
+        args: SwissSystemWinnerDetermineArgs,
+    ) -> Result<()> {
+        SwissSystemWinnerDetermine::
+            swiss_system_winner_determine(ctx, args)
+    }
+}

@@ -82,7 +82,7 @@ impl<'info> SwissSystemParticipantCreate<'info> {
             
             if let Some(local_state::Stage::RegistrationPeriod { timestamp }) = swiss_system.stage {
                 require!(
-                    current < timestamp,
+                    current >= timestamp,
                     CustomError::InvalidStage,
                 );
             } else {

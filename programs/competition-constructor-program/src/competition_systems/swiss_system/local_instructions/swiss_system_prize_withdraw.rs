@@ -11,6 +11,8 @@ pub struct SwissSystemPrizeWithdrawArgs {
     pub competition_index: u64,
 
     pub vault_index: u64,
+
+    pub amount: u64,
 }
 
 #[derive(Accounts)]
@@ -63,7 +65,7 @@ pub struct SwissSystemPrizeWithdraw<'info> {
     pub program_config: Account<'info, ProgramConfig>,
 
     // For transfer context
-    pub system_program: Program<'info, System>,
+    // pub system_program: Program<'info, System>,
 
     /// CHECK: Account of winner ; Need for transfer
     #[account(mut)]
@@ -73,10 +75,25 @@ pub struct SwissSystemPrizeWithdraw<'info> {
 impl<'info> SwissSystemPrizeWithdraw<'info> {
     pub fn validate(&self) -> Result<()> {
         let Self {
+            swiss_system,
             winner,
             vault,
             ..
         } = self;
+
+        let current = Clock::get()?.unix_timestamp;
+
+        #[cfg(not(feature = "testing"))]
+        {
+            if let Some(local_state::Stage::WithdrawPeriod { timestamp }) = swiss_system.stage {
+                require!(
+                    current >= timestamp,
+                    CustomError::InvalidStage,
+                );
+            } else {
+                return err!(CustomError::InvalidStage);
+            };
+        }
 
         if let Some(winner_address) = vault.winner {
             require_keys_eq!(
@@ -90,7 +107,7 @@ impl<'info> SwissSystemPrizeWithdraw<'info> {
 
         Ok(())
     }
-    
+
     #[access_control(ctx.accounts.validate())]
     pub fn swiss_system_prize_withdraw(
         ctx: Context<Self>,
@@ -100,34 +117,13 @@ impl<'info> SwissSystemPrizeWithdraw<'info> {
         let lamports = ctx.accounts.vault.to_account_info().lamports();
 
         if let Some(_) = vault.winner {
-            let transfer = system_program::Transfer {
-                from: ctx.accounts.vault.to_account_info(),
-                to:   ctx.accounts.winner.to_account_info(),
-            };
+            let vault_info = ctx.accounts.vault.to_account_info();
+            let winner_info = ctx.accounts.winner.to_account_info();
 
-            let creator_key = ctx.accounts.swiss_system.creator_key.as_ref();
+            let transfer_amount = vault_info.lamports();
 
-            let signer_seeds = &[
-                SEED_PREFIX,
-                creator_key,
-                SEED_VAULT,
-                &[args.vault_index.try_into().unwrap()],
-                &[vault.bump],
-            ];
-
-            let signer_seeds_slice = &[&signer_seeds[..]];
-
-            let context = CpiContext::new_with_signer(
-                ctx.accounts.system_program.to_account_info(),
-                transfer,
-                signer_seeds_slice,
-            );
-
-            system_program::transfer(
-                context,
-                lamports,
-            )?;
-
+            **vault_info.try_borrow_mut_lamports()? -= args.amount;
+            **winner_info.try_borrow_mut_lamports()? += args.amount;
             Ok(())
         } else {
             return err!(CustomError::WinnerIsNotDetermine);

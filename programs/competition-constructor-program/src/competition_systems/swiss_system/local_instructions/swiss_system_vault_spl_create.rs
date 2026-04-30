@@ -109,6 +109,10 @@ impl<'info> SwissSystemVaultSplCreate<'info> {
         let asset  = None;
 
         let place = ctx.accounts.swiss_system.vault_index;
+        if place > local_state::LEADER_BOARD_LIMIT as u64 {
+            return err!(CustomError::InvalidPlace);
+        }
+        
         let bump = ctx.bumps.vault;
 
         ctx.accounts.vault.set_inner( local_state::Vault {

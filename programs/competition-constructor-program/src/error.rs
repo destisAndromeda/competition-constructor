@@ -29,6 +29,9 @@ pub enum CustomError {
     #[msg("Incorrect Value")]
     IncorrectValue,                // 6008
 
-    #[msg("InvalidStage")]
+    #[msg("Invalid Stage")]
     InvalidStage,                  // 6009
+
+    #[msg("Invalid Place")]
+    InvalidPlace,
 }
