@@ -118,17 +118,12 @@ impl<'info> SwissSystemParticipantCreate<'info> {
     ) -> Result<()> {
         let participant = args.participant;
 
-        let status = ParticipantStatus::Active {
-            timestamp: Clock::get()?.unix_timestamp,
-        };
-
         let points = 0;
         let bump = ctx.bumps.participant;
 
         ctx.accounts.participant.set_inner( local_state::Participant {
             participant,
             points,
-            status,
             bump,
         });
 
