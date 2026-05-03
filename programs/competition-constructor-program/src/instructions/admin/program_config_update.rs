@@ -5,18 +5,8 @@ use crate::seeds::*;
 use crate::error::*;
 
 #[derive(AnchorSerialize, AnchorDeserialize)]
-pub struct ProgramConfigUpdateAuthorityArgs {
-    pub authority: Pubkey,
-}
-
-#[derive(AnchorSerialize, AnchorDeserialize)]
-pub struct ProgramConfigUpdateCreatorKeyArgs {
-    pub creator_key: Pubkey,
-}
-
-#[derive(AnchorSerialize, AnchorDeserialize)]
-pub struct ProgramConfigUpdateTreasuryArgs {
-    pub treasury: Pubkey,
+pub struct ProgramConfigUpdateArgs {
+    pub account: Pubkey,
 }
 
 #[derive(Accounts)]
@@ -38,53 +28,71 @@ pub struct ProgramConfigUpdate<'info> {
 }
 
 impl<'info> ProgramConfigUpdate<'info> {
-    pub fn program_config_update_authority(
-        ctx: Context<Self>,
-        args: ProgramConfigUpdateAuthorityArgs,
-    ) -> Result<()> {
-        let program_config = &mut ctx.accounts.program_config;
+    fn validate(&self, args: &ProgramConfigUpdateArgs) -> Result<()> {
+        let Self {
+            authority,
+            program_config,
+        } = self;
         
-        require_neq!(
-            program_config.authority,
-            args.authority,
+        require_keys_neq!(
+            authority.key(),
+            args.account,
             CustomError::DeprecatedAddress,
         );
-        
-        program_config.authority = args.authority;
 
-        Ok(())
-    }
-
-    pub fn program_config_update_creator_key(
-        ctx: Context<Self>,
-        args: ProgramConfigUpdateCreatorKeyArgs,
-    ) -> Result<()> {
-        let program_config = &mut ctx.accounts.program_config;
-
-        require_neq!(
+        require_keys_neq!(
             program_config.creator_key,
-            args.creator_key,
+            args.account,
             CustomError::DeprecatedAddress,
         );
 
-        program_config.creator_key = args.creator_key;
+        require_keys_neq!(
+            program_config.treasury,
+            args.account,
+            CustomError::DeprecatedAddress,
+        );
 
         Ok(())
     }
 
-    pub fn progmram_config_update_treasury(
+    #[access_control(ctx.accounts.validate(&args))]
+    pub fn program_config_authority_update(
         ctx: Context<Self>,
-        args: ProgramConfigUpdateTreasuryArgs,
+        args: ProgramConfigUpdateArgs,
     ) -> Result<()> {
         let program_config = &mut ctx.accounts.program_config;
 
-        require_neq!(
-            program_config.treasury,
-            args.treasury,
-            CustomError::DeprecatedAddress,
-        );
+        program_config.authority = args.account;
+        
+        program_config.invariant()?;
 
-        program_config.treasury = args.treasury;
+        Ok(())
+    }
+
+    #[access_control(ctx.accounts.validate(&args))]
+    pub fn program_config_creator_key_update(
+        ctx: Context<Self>,
+        args: ProgramConfigUpdateArgs,
+    ) -> Result<()> {
+        let program_config = &mut ctx.accounts.program_config;
+
+        program_config.creator_key = args.account;
+
+        program_config.invariant()?;
+
+        Ok(())
+    }
+
+    #[access_control(ctx.accounts.validate(&args))]
+    pub fn program_config_treasury_update(
+        ctx: Context<Self>,
+        args: ProgramConfigUpdateArgs,
+    ) -> Result<()> {
+        let program_config = &mut ctx.accounts.program_config;
+
+        program_config.treasury = args.account;
+
+        program_config.invariant()?;
 
         Ok(())
     }

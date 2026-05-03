@@ -8,7 +8,7 @@ use crate::error::*;
 const INITIALIZER: Pubkey = pubkey!("GtmrJehR49tXwFh7W4x2kGy61czbEboYSkHQDJw7Ggeb"); // yeah, im slick ass
 
 #[cfg(feature = "testing")]
-const INITIALIZER: Pubkey = pubkey!("GAe1b8H1eUQhGuwAEJKstXLFdpaoHp9voszu1uw46Htm");
+const INITIALIZER: Pubkey = pubkey!("FAHrwTPYRsBFkjV8A5zF8TQrbHhMQimDPn1gQVtL4Sjj");
 
 #[derive(AnchorSerialize, AnchorDeserialize)]
 pub struct ProgramConfigInitArgs {
@@ -45,7 +45,7 @@ impl<'info> ProgramConfigInit<'info> {
     pub fn program_config_init(ctx: Context<Self>, args: ProgramConfigInitArgs) -> Result<()> {
         let authority = ctx.accounts.authority.key();
         let creator_key = args.creator_key;
-        
+
         let _reserved: [u8; 64] = [0u8; 64];
         let treasury = args.treasury;
         let bump = ctx.bumps.program_config;
@@ -57,6 +57,8 @@ impl<'info> ProgramConfigInit<'info> {
             _reserved,
             bump,
         });
+
+        ctx.accounts.program_config.invariant()?;
 
         Ok(())
     }

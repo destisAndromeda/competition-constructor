@@ -1,3 +1,3 @@
-pub mod example;
+pub mod swiss_system;
 
-pub use example::*;
+pub use swiss_system::*;

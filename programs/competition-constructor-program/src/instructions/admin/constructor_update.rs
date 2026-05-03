@@ -5,39 +5,36 @@ use crate::seeds::*;
 use crate::error::*;
 
 #[derive(AnchorSerialize, AnchorDeserialize)]
-pub struct ConstructorUpdateAuthorityArgs {
-    pub authority: Pubkey,
-}
-
-#[derive(AnchorSerialize, AnchorDeserialize)]
-pub struct ConstructorUpdateCreatorKeyArgs {
-    pub creator_key: Pubkey,
-}
-
-#[derive(AnchorSerialize, AnchorDeserialize)]
-pub struct ConstructorUpdateTransactionFeeArgs {
+pub struct ConstructorTransactionFeeUpdateArgs {
     pub transaction_fee: u64,
+}
+
+#[derive(AnchorSerialize, AnchorDeserialize)]
+pub struct ConstructorUpdateArgs {
+    pub creator_key: Pubkey,
 }
 
 #[derive(Accounts)]
 pub struct ConstructorUpdate<'info> {
     #[account(mut)]
-    pub creator_key: Signer<'info>,
+    pub authority: Signer<'info>,
 
     #[account(
         mut,
+        has_one = authority
+            @ CustomError::Unauthorized,
         seeds = [
             SEED_PREFIX,
             program_config.key().as_ref(),
             SEED_CONSTRUCTOR,
-            creator_key.key().as_ref(),
+            program_config.creator_key.as_ref(),
         ],
         bump  = constructor.bump,
     )]
     pub constructor: Account<'info, Constructor>,
 
     #[account(
-        has_one = creator_key
+        constraint = authority.key() != program_config.creator_key
             @ CustomError::Unauthorized,
         seeds = [
             SEED_PREFIX,
@@ -49,44 +46,46 @@ pub struct ConstructorUpdate<'info> {
 }
 
 impl<'info> ConstructorUpdate<'info> {
-    pub fn constructor_update_authority(
-        ctx: Context<Self>,
-        args: ConstructorUpdateAuthorityArgs,
-    ) -> Result<()> {
-        let constructor = &mut ctx.accounts.constructor;
+    fn validate(&self, args: &ConstructorUpdateArgs) -> Result<()> {
+        let Self {
+            authority,
+            constructor,
+            program_config,
+            ..
+        } = self;
 
-        require_neq!(
-            constructor.authority,
-            args.authority,
-            CustomError::DeprecatedAddress,
+        require_keys_neq!(
+            authority.key(),
+            args.creator_key,
+            CustomError::InvalidAccount,
         );
 
-        constructor.authority = args.authority;
+        require_keys_neq!(
+            program_config.creator_key,
+            args.creator_key,
+            CustomError::InvalidAccount,
+        );
 
         Ok(())
     }
 
-    pub fn constructor_update_creator_key(
+    #[access_control(ctx.accounts.validate(&args))]
+    pub fn constructor_creator_key_update(
         ctx: Context<Self>,
-        args: ConstructorUpdateCreatorKeyArgs,
+        args: ConstructorUpdateArgs,
     ) -> Result<()> {
         let constructor = &mut ctx.accounts.constructor;
-
-        require_neq!(
-            constructor.creator_key,
-            args.creator_key,
-            CustomError::DeprecatedAddress,
-        );
 
         constructor.creator_key = args.creator_key;
-        constructor.competition_index = 0;
+
+        constructor.invariant()?;
 
         Ok(())
     }
 
-    pub fn constructor_update_transaction_fee(
+    pub fn constructor_transaction_fee_update(
         ctx: Context<Self>,
-        args: ConstructorUpdateTransactionFeeArgs,
+        args: ConstructorTransactionFeeUpdateArgs,
     ) -> Result<()> {
         let constructor = &mut ctx.accounts.constructor;
 
@@ -97,6 +96,8 @@ impl<'info> ConstructorUpdate<'info> {
         );
 
         constructor.transaction_fee = args.transaction_fee;
+
+        constructor.invariant()?;
 
         Ok(())
     }

@@ -4,8 +4,10 @@ mod error;
 mod seeds;
 mod state;
 mod instructions;
+mod competition_systems;
 
 use instructions::*;
+use competition_systems::*;
 
 declare_id!("8bDwCU1Y598BoD2BWnchBCeuvQ4rW3DUbV4c3tDvRkVX");
 
@@ -21,28 +23,28 @@ pub mod competition_constructor_program {
             program_config_init(ctx, args)
     }
 
-    pub fn program_config_update(
+    pub fn program_config_authority_update(
         ctx: Context<ProgramConfigUpdate>,
-        args: ProgramConfigUpdateAuthorityArgs,
+        args: ProgramConfigUpdateArgs,
     ) -> Result<()> {
         ProgramConfigUpdate::
-            program_config_update_authority(ctx, args)
+            program_config_authority_update(ctx, args)
     }
 
-    pub fn program_config_update_creator_key(
+    pub fn program_config_creator_key_update(
         ctx: Context<ProgramConfigUpdate>,
-        args: ProgramConfigUpdateCreatorKeyArgs,
+        args: ProgramConfigUpdateArgs,
     ) -> Result<()> {
         ProgramConfigUpdate::
-            program_config_update_creator_key(ctx, args)
+            program_config_creator_key_update(ctx, args)
     }
 
-    pub fn program_config_update_tresury(
+    pub fn program_config_treasury_update(
         ctx: Context<ProgramConfigUpdate>,
-        args: ProgramConfigUpdateTreasuryArgs,
+        args: ProgramConfigUpdateArgs,
     ) -> Result<()> {
         ProgramConfigUpdate::
-            progmram_config_update_treasury(ctx, args)
+            program_config_treasury_update(ctx, args)
     }
 
     pub fn constructor_create(
@@ -53,28 +55,115 @@ pub mod competition_constructor_program {
             constructor_create(ctx, args)
     }
 
-    pub fn constructor_update_authority(
-        ctx: Context<ConstructorUpdate>,
-        args: ConstructorUpdateAuthorityArgs,
+    pub fn constructor_authority_update(
+        ctx: Context<ConstructorAuthorityUpdate>,
+        args: ConstructorAuthorityUpdateArgs,
     ) -> Result<()> {
-        ConstructorUpdate::
-            constructor_update_authority(ctx, args)
+        ConstructorAuthorityUpdate::
+            constructor_authority_update(ctx, args)
     }
 
-    pub fn constructor_update_creator_key(
+    pub fn constructor_creator_key_update(
         ctx: Context<ConstructorUpdate>,
-        args: ConstructorUpdateCreatorKeyArgs,
+        args: ConstructorUpdateArgs,
         ) -> Result<()> {
         ConstructorUpdate::
-            constructor_update_creator_key(ctx, args)
+            constructor_creator_key_update(ctx, args)
     }
 
-    pub fn constructor_update_transaction_fee(
+    pub fn constructor_transaction_fee_update(
         ctx: Context<ConstructorUpdate>,
-        args: ConstructorUpdateTransactionFeeArgs,
+        args: ConstructorTransactionFeeUpdateArgs,
     ) -> Result<()> {
         ConstructorUpdate::
-            constructor_update_transaction_fee(ctx, args)
+            constructor_transaction_fee_update(ctx, args)
+    }
+
+    pub fn swiss_system_create(
+        ctx: Context<SwissSystemCreate>,
+        args: SwissSystemCreateArgs,
+    ) -> Result<()> {
+        SwissSystemCreate::
+            swiss_system_create(ctx, args)
+    }
+
+    pub fn swiss_system_authority_update(
+        ctx: Context<SwissSystemUpdate>,
+        args: SwissSystemUpdateArgs,
+    ) -> Result<()> {
+        SwissSystemUpdate::
+            swiss_system_authority_update(ctx, args)
+    }
+
+    pub fn swiss_system_creator_key_update(
+        ctx: Context<SwissSystemUpdate>,
+        args: SwissSystemUpdateArgs,
+    ) -> Result<()> {
+        SwissSystemUpdate::
+            swiss_system_creator_key_update(ctx, args)
+    }
+
+    pub fn swiss_system_stage_update(
+        ctx: Context<SwissSystemStageUpdate>,
+        args: SwissSystemStageUpdateArgs,
+    ) -> Result<()> {
+        SwissSystemStageUpdate::
+            swiss_system_stage_update(ctx, args)
+    }
+
+    pub fn swiss_system_vault_create(
+        ctx: Context<SwissSystemVaultCreate>,
+        args: SwissSystemVaultCreateArgs,
+    ) -> Result<()> {
+        SwissSystemVaultCreate::
+            swiss_system_vault_create(ctx, args)
+    }
+
+    pub fn swiss_system_vault_spl_create(
+        ctx: Context<SwissSystemVaultSplCreate>,
+        args: SwissSystemVaultSplCreateArgs
+    ) -> Result<()> {
+        SwissSystemVaultSplCreate::
+            swiss_system_vault_spl_create(ctx, args)
+    }
+
+    pub fn swiss_system_prize_withdraw(
+        ctx: Context<SwissSystemPrizeWithdraw>,
+        args: SwissSystemPrizeWithdrawArgs,
+    ) -> Result<()> {
+        SwissSystemPrizeWithdraw::
+            swiss_system_prize_withdraw(ctx, args)
+    }
+
+    pub fn swiss_system_participant_create(
+        ctx: Context<SwissSystemParticipantCreate>,
+        args: SwissSystemParticipantCreateArgs,
+    ) -> Result<()> {
+        SwissSystemParticipantCreate::
+            swiss_system_participant_create(ctx, args)
+    }
+
+    pub fn swiss_system_leaderboard_create(
+        ctx: Context<SwissSystemLeaderBoardCreate>,
+        args: SwissSystemLeaderBoardCreateArgs,
+    ) -> Result<()> {
+        SwissSystemLeaderBoardCreate::
+            swiss_system_leaderboard_create(ctx, args)
+    }
+
+    pub fn swiss_system_points_award(
+        ctx: Context<SwissSystemPointsAward>,
+        args: SwissSystemPointsAwardArgs
+    ) -> Result<()> {
+        SwissSystemPointsAward::
+            swiss_system_points_award(ctx, args)
+    }
+
+    pub fn swiss_system_winner_determine(
+        ctx: Context<SwissSystemWinnerDetermine>,
+        args: SwissSystemWinnerDetermineArgs,
+    ) -> Result<()> {
+        SwissSystemWinnerDetermine::
+            swiss_system_winner_determine(ctx, args)
     }
 }
-
