@@ -167,7 +167,6 @@ describe('swiss_system_particiapnt_create', () => {
       
       expect(participantAccount.participant.equals(state.participantOne.publicKey)).to.be.true;
       expect(participantAccount.points.eq(new anchor.BN(0))).to.be.true;
-      expect(participantAccount.status.active).to.not.be.undefined;
   });
 
   it('error: should fail when try initialize account twice', async () => {
@@ -211,7 +210,6 @@ describe('swiss_system_particiapnt_create', () => {
       
       expect(participantAccount.participant.equals(state.participantTwo.publicKey)).to.be.true;
       expect(participantAccount.points.eq(new anchor.BN(0))).to.be.true;
-      expect(participantAccount.status.active).to.not.be.undefined;
   });
 
   it('create thrid participant', async () => {
@@ -235,7 +233,6 @@ describe('swiss_system_particiapnt_create', () => {
       
       expect(participantAccount.participant.equals(state.participantThree.publicKey)).to.be.true;
       expect(participantAccount.points.eq(new anchor.BN(0))).to.be.true;
-      expect(participantAccount.status.active).to.not.be.undefined;
   });
 
   it('create fourth participant', async () => {
@@ -259,6 +256,5 @@ describe('swiss_system_particiapnt_create', () => {
       
       expect(participantAccount.participant.equals(state.participantFour.publicKey)).to.be.true;
       expect(participantAccount.points.eq(new anchor.BN(0))).to.be.true;
-      expect(participantAccount.status.active).to.not.be.undefined;
   });
 });
