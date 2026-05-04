@@ -100,3 +100,21 @@ flowchart TD
     I -->|valid winner and stage| J[Transfer funds]
     I -->|invalid| K[Reject]
 ```
+
+## Guarantees
+
+- No duplicate initialization of accounts
+- Strict authority validation
+- Deterministic leaderboard updates
+- No zero-point or invalid point assignments
+- Prize distribution only after winner determination
+
+## Security considerations
+
+While building the system, several edge cases were identified:
+
+- role collision (authority = participant)
+- duplicate initialization attacks
+- inconsistent leaderboard updates
+
+These are covered by tests.
