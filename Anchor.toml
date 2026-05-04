@@ -6,7 +6,7 @@ resolution = true
 skip-lint = false
 
 [programs.localnet]
-competition_constructor_program = "8bDwCU1Y598BoD2BWnchBCeuvQ4rW3DUbV4c3tDvRkVX"
+competition_constructor_program = "63yvyYYUHSZyHEKnz4YerXBvZ5VomBwZtLF1XLmSWfbR"
 
 [registry]
 url = "https://api.apr.dev"
@@ -16,23 +16,5 @@ cluster = "localnet"
 wallet = "~/.config/solana/id.json"
 
 [scripts]
-test = """                                      \
-yarn run ts-mocha -p ./tsconfig.json -t 1000000 \
-./tests/program_config.ts                       \
-./tests/constructor.ts                          \
-./tests/swiss_system.ts                         \
-./tests/swiss_system_vault_create.ts            \
-./tests/swiss_system_vault_spl_create.ts        \
-./tests/swiss_system_leaderboard_create.ts      \
-./tests/swiss_system_participant_create.ts      \
-./tests/swiss_system_points_award.ts            \
-./tests/swiss_system_winner_determine.ts        \
-./tests/swiss_system_prize_withdraw.ts          \
-"""
-test-slow = """                                 \
-yarn run ts-mocha -p ./tsconfig.json -t 1000000 \
-./tests/program_config.ts                       \
-./tests/constructor.ts                          \
-./tests/swiss_system.ts                         \
-./tests/swiss_system_stage_update.ts            \
-"""
+test = "                                      yarn run ts-mocha -p ./tsconfig.json -t 1000000 ./tests/program_config.ts                       ./tests/constructor.ts                          ./tests/swiss_system.ts                         ./tests/swiss_system_vault_create.ts            ./tests/swiss_system_vault_spl_create.ts        ./tests/swiss_system_leaderboard_create.ts      ./tests/swiss_system_participant_create.ts      ./tests/swiss_system_points_award.ts            ./tests/swiss_system_winner_determine.ts        ./tests/swiss_system_prize_withdraw.ts          "
+test-slow = "                                 yarn run ts-mocha -p ./tsconfig.json -t 1000000 ./tests/program_config.ts                       ./tests/constructor.ts                          ./tests/swiss_system.ts                         ./tests/swiss_system_stage_update.ts            "

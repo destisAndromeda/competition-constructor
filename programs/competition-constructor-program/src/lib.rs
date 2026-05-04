@@ -9,7 +9,7 @@ mod competition_systems;
 use instructions::*;
 use competition_systems::*;
 
-declare_id!("8bDwCU1Y598BoD2BWnchBCeuvQ4rW3DUbV4c3tDvRkVX");
+declare_id!("63yvyYYUHSZyHEKnz4YerXBvZ5VomBwZtLF1XLmSWfbR");
 
 #[program]
 pub mod competition_constructor_program {

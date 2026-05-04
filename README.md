@@ -48,6 +48,10 @@ If you want to run the faster tests from `Anchor.toml`:
 yarn run ts-mocha -p ./tsconfig.json -t 1000000 ./tests/program_config.ts ./tests/constructor.ts ./tests/swiss_system.ts ./tests/swiss_system_vault_create.ts ./tests/swiss_system_vault_spl_create.ts ./tests/swiss_system_leaderboard_create.ts ./tests/swiss_system_participant_create.ts ./tests/swiss_system_points_award.ts ./tests/swiss_system_winner_determine.ts ./tests/swiss_system_prize_withdraw.ts
 ```
 
+## Deployment
+
+The program is deployed on devnet at: `63yvyYYUHSZyHEKnz4YerXBvZ5VomBwZtLF1XLmSWfbR`
+
 ## Tests
 
 The `tests/` directory contains the following scenarios:
