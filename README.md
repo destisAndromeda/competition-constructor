@@ -32,7 +32,7 @@ The `competition-constructor-program` is a Solana/Anchor smart contract for runn
 
 ```bash
 # Install dependencies
-cd /home/yutiuser/projects/solana/competition-constructor/competition-constructor-program
+cd ./solanacompetition-constructor/competition-constructor-program
 yarn install
 
 # Build the Anchor program
