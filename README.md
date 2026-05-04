@@ -40,6 +40,8 @@ anchor build
 
 # Run tests
 anchor test -- --features testing
+
+**Note:** Before running tests, update the `INITIALIZER` constant in `programs/competition-constructor-program/src/instructions/admin/program_config_init.rs` to your Solana wallet address (the one used by Anchor). Otherwise, the tests will fail due to authority mismatch.
 ```
 
 If you want to run the faster tests from `Anchor.toml`:
@@ -53,6 +55,8 @@ yarn run ts-mocha -p ./tsconfig.json -t 1000000 ./tests/program_config.ts ./test
 The program is deployed on devnet at: `63yvyYYUHSZyHEKnz4YerXBvZ5VomBwZtLF1XLmSWfbR`
 
 ## Tests
+
+**Important:** To run tests successfully, you must update the `INITIALIZER` constant in `programs/competition-constructor-program/src/instructions/admin/program_config_init.rs` to match your Solana wallet address (the one configured in Anchor). The tests use the `--features testing` flag, which sets the initializer to a specific address. Change it to your own address to avoid authority validation failures.
 
 The `tests/` directory contains the following scenarios:
 
