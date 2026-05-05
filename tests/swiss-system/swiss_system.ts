@@ -1,10 +1,10 @@
 import * as anchor from '@coral-xyz/anchor';
 import { Program } from '@coral-xyz/anchor';
 import { PublicKey } from '@solana/web3.js';
-import { CompetitionConstructorProgram } from '../target/types/competition_constructor_program';
+import { CompetitionConstructorProgram } from '../../target/types/competition_constructor_program';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
-import { state } from './shared.ts';
+import { state } from '../shared.ts';
 
 const { expect } = chai;
 
